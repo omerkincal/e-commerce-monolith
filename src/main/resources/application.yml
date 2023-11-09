@@ -1,0 +1,16 @@
+server:
+  port: 9090
+spring:
+  main:
+    allow-circular-references: true
+  application:
+    name: school-web
+  datasource:
+    url: jdbc:mysql://localhost:3306/e-commerce?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: root
+    password: omeR%50hajk
+    driverClassName: com.mysql.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+
