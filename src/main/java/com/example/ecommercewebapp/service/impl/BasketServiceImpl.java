@@ -108,10 +108,7 @@ public class BasketServiceImpl implements BasketService{
         return totalAmount;
     }
 
-    @Override
-    public List<BasketDto> findBasketByCustomerId(String customerId) {
-        return null;
-    }
+
 
     @Override
     public BasketDto getBasketById(String customerId) {
