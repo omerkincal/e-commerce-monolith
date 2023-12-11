@@ -1,8 +1,6 @@
 package com.example.ecommercewebapp.domain.platform.customer.web;
 
 import com.example.ecommercewebapp.domain.platform.customer.api.CustomerDto;
-import com.example.ecommercewebapp.domain.platform.customer.web.CustomerRequest;
-import com.example.ecommercewebapp.domain.platform.customer.web.CustomerResponse;
 import com.example.ecommercewebapp.domain.platform.customer.api.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

@@ -1,10 +1,7 @@
 package com.example.ecommercewebapp.domain.platform.category.impl;
 
 import com.example.ecommercewebapp.domain.platform.category.api.CategoryDto;
-import com.example.ecommercewebapp.domain.platform.category.impl.Category;
-import com.example.ecommercewebapp.domain.platform.category.impl.CategoryRepository;
 import com.example.ecommercewebapp.domain.platform.category.api.CategoryService;
-import com.example.ecommercewebapp.service.ShopService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +14,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository repository;
 
-    private final ShopService shopService;
 
     @Override
     public CategoryDto save(CategoryDto categoryDto) {
@@ -36,7 +32,6 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto updateCategory(CategoryDto categoryDto, String id) {
         Category category = getCategoryEntity(id);
         category.setCategoryName(categoryDto.getCategoryName());
-        category.setShop(shopService.getShopEntity(String.valueOf(categoryDto.getShopId())));
         category = repository.save(category);
         return toDto(category);
     }
@@ -65,14 +60,12 @@ public class CategoryServiceImpl implements CategoryService {
         return CategoryDto.builder()
                 .categoryId(category.getCategoryId())
                 .categoryName(category.getCategoryName())
-                .shopId(category.getShop().getShopId())
                 .build();
     }
     @Override
     public Category toEntity(CategoryDto categoryDto){
         Category category = new Category();
         category.setCategoryName(categoryDto.getCategoryName());
-        category.setShop(shopService.getShopEntity(String.valueOf(categoryDto.getShopId())));
         return category;
     }
 }

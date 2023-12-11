@@ -1,8 +1,6 @@
 package com.example.ecommercewebapp.domain.platform.customer.impl;
 
 import com.example.ecommercewebapp.domain.platform.customer.api.CustomerDto;
-import com.example.ecommercewebapp.domain.platform.customer.impl.Customer;
-import com.example.ecommercewebapp.domain.platform.customer.impl.CustomerRepository;
 import com.example.ecommercewebapp.domain.platform.customer.api.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

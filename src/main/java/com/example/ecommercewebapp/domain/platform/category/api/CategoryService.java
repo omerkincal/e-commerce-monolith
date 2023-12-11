@@ -1,7 +1,6 @@
 package com.example.ecommercewebapp.domain.platform.category.api;
 
 
-import com.example.ecommercewebapp.domain.platform.category.api.CategoryDto;
 import com.example.ecommercewebapp.domain.platform.category.impl.Category;
 
 import java.util.List;

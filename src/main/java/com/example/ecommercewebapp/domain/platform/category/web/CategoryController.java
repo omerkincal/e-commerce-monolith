@@ -1,8 +1,6 @@
 package com.example.ecommercewebapp.domain.platform.category.web;
 
 import com.example.ecommercewebapp.domain.platform.category.api.CategoryDto;
-import com.example.ecommercewebapp.domain.platform.category.web.CategoryRequest;
-import com.example.ecommercewebapp.domain.platform.category.web.CategoryResponse;
 import com.example.ecommercewebapp.domain.platform.category.api.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

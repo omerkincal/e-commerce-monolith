@@ -3,8 +3,6 @@ package com.example.ecommercewebapp.domain.platform.category.api;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
 @Builder
 public class CategoryDto {

@@ -12,7 +12,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class AddBasketRequest {
+public class BasketRequest {
     private int productId;
     private  int count;
     private  int basketId;

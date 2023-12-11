@@ -1,6 +1,5 @@
 package com.example.ecommercewebapp.domain.platform.product.api;
 
-import com.example.ecommercewebapp.domain.platform.product.api.ProductDto;
 import com.example.ecommercewebapp.domain.platform.product.impl.Product;
 
 import java.util.List;

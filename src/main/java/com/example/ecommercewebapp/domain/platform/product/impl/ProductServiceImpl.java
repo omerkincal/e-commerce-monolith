@@ -1,9 +1,7 @@
 package com.example.ecommercewebapp.domain.platform.product.impl;
 
-import com.example.ecommercewebapp.domain.platform.product.api.ProductDto;
-import com.example.ecommercewebapp.domain.platform.product.impl.Product;
-import com.example.ecommercewebapp.domain.platform.product.impl.ProductRepository;
 import com.example.ecommercewebapp.domain.platform.category.api.CategoryService;
+import com.example.ecommercewebapp.domain.platform.product.api.ProductDto;
 import com.example.ecommercewebapp.domain.platform.product.api.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,14 +21,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto save(ProductDto productDto, String shopAdminId) {
-        if (Integer.parseInt(shopAdminId) == categoryService
-                .getCategoryEntity(String.valueOf(productDto.getCategoryId()))
-                .getShop().getShopAdmin().getShopAdminId()){
             Product product = toEntity(productDto);
             product = repository.save(product);
             return toDto(product);
-        }
-        return null;
     }
 
     @Override

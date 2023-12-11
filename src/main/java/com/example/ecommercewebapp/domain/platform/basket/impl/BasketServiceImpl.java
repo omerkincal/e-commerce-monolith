@@ -1,13 +1,13 @@
 package com.example.ecommercewebapp.domain.platform.basket.impl;
 
 import com.example.ecommercewebapp.domain.platform.basket.api.BasketDto;
+import com.example.ecommercewebapp.domain.platform.basket.api.BasketService;
 import com.example.ecommercewebapp.domain.platform.basket.api.basketitem.BasketItemDto;
 import com.example.ecommercewebapp.domain.platform.basket.impl.basketitem.BasketItem;
 import com.example.ecommercewebapp.domain.platform.basket.impl.basketitem.BasketItemServiceImpl;
+import com.example.ecommercewebapp.domain.platform.customer.api.CustomerService;
 import com.example.ecommercewebapp.domain.platform.customer.impl.Customer;
 import com.example.ecommercewebapp.domain.platform.product.impl.Product;
-import com.example.ecommercewebapp.domain.platform.basket.api.BasketService;
-import com.example.ecommercewebapp.domain.platform.customer.api.CustomerService;
 import com.example.ecommercewebapp.domain.platform.product.impl.ProductServiceImpl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

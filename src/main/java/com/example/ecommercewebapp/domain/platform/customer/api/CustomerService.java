@@ -1,6 +1,5 @@
 package com.example.ecommercewebapp.domain.platform.customer.api;
 
-import com.example.ecommercewebapp.domain.platform.customer.api.CustomerDto;
 import com.example.ecommercewebapp.domain.platform.customer.impl.Customer;
 
 import java.util.List;
