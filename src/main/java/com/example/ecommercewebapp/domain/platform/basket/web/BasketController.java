@@ -1,10 +1,10 @@
 package com.example.ecommercewebapp.domain.platform.basket.web;
 
 
-import com.example.ecommercewebapp.domain.platform.basket.api.BasketDto;
 import com.example.ecommercewebapp.domain.platform.basket.api.BasketService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("baskets")
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 public class BasketController {
     private final BasketService service;
 
+    /*
     @PostMapping("add-product-to-basket")
     public BasketResponse addProductToBasket(@RequestBody BasketRequest addBasketRequest){
         return toResponse(service.addProductToBasket(addBasketRequest.toDto()));
@@ -36,4 +37,6 @@ public class BasketController {
                 .basketItemList(basketDto.getBasketItemList())
                 .build();
     }
+
+    */
 }

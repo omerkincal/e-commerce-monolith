@@ -1,33 +1,27 @@
 package com.example.ecommercewebapp.domain.platform.basket.web;
 
-import com.example.ecommercewebapp.domain.platform.basket.api.BasketDto;
-import com.example.ecommercewebapp.domain.platform.basket.api.basketitem.BasketItemDto;
-import com.example.ecommercewebapp.domain.platform.customer.api.CustomerDto;
-import com.example.ecommercewebapp.domain.platform.product.api.ProductDto;
-import lombok.Builder;
-import lombok.Data;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@Data
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
+@ToString
 public class BasketRequest {
-    private int productId;
-    private  int count;
-    private  int basketId;
-    private  int customerId;
+    @NotNull(message = "validation.required.productId")
+    @NotBlank(message = "validation.required.productId")
+    @NotEmpty(message = "validation.required.productId")
+    private String productId;
 
+    @NotNull(message = "validation.required.quantity")
+    private Integer quantity;
 
-    public BasketDto toDto(){
-        BasketItemDto dto = BasketItemDto.builder().product(new ProductDto(productId)).build();
-        dto.count = count;
-        List<BasketItemDto> basketItemList = new ArrayList<>();
-        basketItemList.add(dto);
-        return BasketDto.builder()
-                .customer(CustomerDto.builder().customerId(customerId).build())
-                .basketId(basketId)
-                .basketItemList(basketItemList)
-                .build();
-    }
+    @NotNull(message = "validation.required.customerId")
+    @NotBlank(message = "validation.required.customerId")
+    @NotEmpty(message = "validation.required.customerId")
+    private String customerId;
 }

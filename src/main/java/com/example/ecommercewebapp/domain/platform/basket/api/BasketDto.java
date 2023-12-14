@@ -1,17 +1,24 @@
 package com.example.ecommercewebapp.domain.platform.basket.api;
 
-import com.example.ecommercewebapp.domain.platform.basket.api.basketitem.BasketItemDto;
+import com.example.ecommercewebapp.domain.platform.basket.api.basketproduct.BasketProductDto;
 import com.example.ecommercewebapp.domain.platform.customer.api.CustomerDto;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
+import java.util.Date;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
+@ToString
 public class BasketDto {
-    private  int basketId;
-    private  double totalAmount;
+    private String id;
+    private Date created;
+    private Date modified;
+    private Double totalAmount;
+    private Integer status;
     private CustomerDto customer;
-    private List<BasketItemDto> basketItemList;
+    private List<BasketProductDto> products;
 }

@@ -2,22 +2,11 @@ package com.example.ecommercewebapp.domain.platform.basket.impl;
 
 import com.example.ecommercewebapp.domain.platform.basket.api.BasketDto;
 import com.example.ecommercewebapp.domain.platform.basket.api.BasketService;
-import com.example.ecommercewebapp.domain.platform.basket.api.basketitem.BasketItemDto;
-import com.example.ecommercewebapp.domain.platform.basket.impl.basketitem.BasketItem;
-import com.example.ecommercewebapp.domain.platform.basket.impl.basketitem.BasketItemServiceImpl;
+import com.example.ecommercewebapp.domain.platform.basket.impl.basketproduct.BasketProductServiceImpl;
 import com.example.ecommercewebapp.domain.platform.customer.api.CustomerService;
-import com.example.ecommercewebapp.domain.platform.customer.impl.Customer;
-import com.example.ecommercewebapp.domain.platform.product.impl.Product;
 import com.example.ecommercewebapp.domain.platform.product.impl.ProductServiceImpl;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.ErrorResponseException;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -30,13 +19,28 @@ public class BasketServiceImpl implements BasketService{
 
     private final ProductServiceImpl productService;
 
-    private final BasketItemServiceImpl basketItemService;
+    private final BasketProductServiceImpl basketItemService;
 
 
     public final int BASKET_STATUS_NONE = 0;
     public final int BASKET_STATUS_SALED = 1;
 
+    @Override
+    public BasketDto addProductToBasket(BasketDto basketDto) {
+        return null;
+    }
 
+    @Override
+    public BasketDto getBasketById(String customerId) {
+        return null;
+    }
+
+    @Override
+    public String removeProductFromBasket(String basketItemId) {
+        return null;
+    }
+
+/*
 
     @Override
     public BasketDto addProductToBasket(BasketDto basketDto) {
@@ -56,44 +60,44 @@ public class BasketServiceImpl implements BasketService{
         Basket basket = new Basket();
         basket.setCustomer(customer);
         basket.setStatus(BASKET_STATUS_NONE);
-        List<BasketItem> basketItemList = new ArrayList<>();
-        for(BasketItemDto dto: basketDto.getBasketItemList()){
-            BasketItem basketItem = new BasketItem();
-            basketItem.setCount(dto.getCount());
+        List<BasketProduct> basketProductList = new ArrayList<>();
+        for(BasketProductDto dto: basketDto.getBasketItemList()){
+            BasketProduct basketProduct = new BasketProduct();
+            basketProduct.setCount(dto.getCount());
             Product product = productService.getProductEntity(String.valueOf(dto.getProduct().getProductId()));
-            basketItem.setProduct(product);
-            basketItem.setBasketItemAmount(dto.getCount()*product.getPrice());
-            basketItem.setBasket(basket);
-            basketItemList.add(basketItem);
+            basketProduct.setProduct(product);
+            basketProduct.setBasketItemAmount(dto.getCount()*product.getPrice());
+            basketProduct.setBasket(basket);
+            basketProductList.add(basketProduct);
         }
-        basket.setBasketItemList(basketItemList);
-        basket.setTotalAmount(basket.getBasketItemList().get(0).getCount()* basketItemList.get(0).getProduct().getPrice());
+        basket.setBasketItemList(basketProductList);
+        basket.setTotalAmount(basket.getBasketItemList().get(0).getCount()* basketProductList.get(0).getProduct().getPrice());
         basket =repository.save(basket);
         return toDto(basket);
     }
 
     private BasketDto sepetVarUrunEkle(Basket basket, BasketDto basketDto) {
-        List<BasketItem> basketItemList = basket.getBasketItemList();
+        List<BasketProduct> basketProductList = basket.getBasketItemList();
         //bu satır bir basketıtemın bir sepette zaten varmı yoksa ilk defa mı eklendiğini kontrol eder
-        BasketItem basketItem = basketItemService.findBasketItemByBasketIdAndProductId(basket.getBasketId(), basketDto.getBasketItemList().get(0).getProduct().getProductId());
-        if (basketItem != null){
-            Product product = basketItem.getProduct();
-            basketItem.setProduct(product);
-            basketItem.setCount(basketDto.getBasketItemList().get(0).getCount());
-            basketItem.setBasketItemAmount(basketItem.getCount()*product.getPrice());
-            basketItemService.save(basketItem);
+        BasketProduct basketProduct = basketItemService.findBasketItemByBasketIdAndProductId(basket.getBasketId(), basketDto.getBasketItemList().get(0).getProduct().getProductId());
+        if (basketProduct != null){
+            Product product = basketProduct.getProduct();
+            basketProduct.setProduct(product);
+            basketProduct.setCount(basketDto.getBasketItemList().get(0).getCount());
+            basketProduct.setBasketItemAmount(basketProduct.getCount()*product.getPrice());
+            basketItemService.save(basketProduct);
         }else {
-            BasketItem newBasketItem = new BasketItem();
+            BasketProduct newBasketProduct = new BasketProduct();
             //Product product = productService.getProductEntity(String.valueOf(basketDto.getBasketItemList().get(0).getProduct().getProductId()));
             Product product = productService.getProductEntity(String.valueOf(basketDto.getBasketItemList().get(0).getProduct().getProductId()));
-            newBasketItem.setProduct(product);
-            newBasketItem.setCount(basketDto.getBasketItemList().get(0).getCount());
-            newBasketItem.setBasketItemAmount(newBasketItem.getCount()*product.getPrice());
-            newBasketItem = basketItemService.save(newBasketItem);
-            newBasketItem.setBasket(basket);
-            basketItemList.add(newBasketItem);
+            newBasketProduct.setProduct(product);
+            newBasketProduct.setCount(basketDto.getBasketItemList().get(0).getCount());
+            newBasketProduct.setBasketItemAmount(newBasketProduct.getCount()*product.getPrice());
+            newBasketProduct = basketItemService.save(newBasketProduct);
+            newBasketProduct.setBasket(basket);
+            basketProductList.add(newBasketProduct);
         }
-        basket.setBasketItemList(basketItemList);
+        basket.setBasketItemList(basketProductList);
         basket.setTotalAmount(calculateBasketAmount(basket.getBasketId()));
         basket = repository.save(basket);
         return toDto(basket);
@@ -102,8 +106,8 @@ public class BasketServiceImpl implements BasketService{
     private double calculateBasketAmount(int basketId) {
         Basket basket = repository.findBasketByBasketId(basketId);
         double totalAmount = 0;
-        for (BasketItem basketItem : basket.getBasketItemList()){
-            totalAmount += basketItem.getBasketItemAmount();
+        for (BasketProduct basketProduct : basket.getBasketItemList()){
+            totalAmount += basketProduct.getBasketItemAmount();
         }
         return totalAmount;
     }
@@ -123,31 +127,12 @@ public class BasketServiceImpl implements BasketService{
 
 
         /*Basket basket = repository.findBasketByCustomer_CustomerIdAndStatusEquals(Integer.parseInt(customerId), BASKET_STATUS_NONE);
-        List<BasketItem> basketItemList = basket.getBasketItemList();
-        for (BasketItem basketItem : basketItemList){
+        List<BasketProduct> basketItemList = basket.getBasketItemList();
+        for (BasketProduct basketItem : basketItemList){
             if (basketItem.getProduct().getProductId() == productId){
                 basketItemService.delete(basketItem);
             }
         }
         basket.setBasketItemList(basketItemList);
         repository.save(basket);*/
-    }
-
-
-    public BasketDto toDto(Basket basket) {
-        return BasketDto.builder()
-                .basketId(basket.getBasketId())
-                .customer(customerService.toDto(basket.getCustomer()))
-                .basketItemList(basket.getBasketItemList()
-                        .stream()
-                        .map(basketItem -> basketItemService.toDto(basketItem))
-                        .collect(Collectors.toList()))
-                .totalAmount(basket.getTotalAmount())
-                .build();
-    }
-
-
-    public Basket getBasketEntity(String id) {
-        return repository.findById(Integer.parseInt(id)).get();
-    }
 }

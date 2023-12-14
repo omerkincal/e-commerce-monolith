@@ -1,7 +1,6 @@
 package com.example.ecommercewebapp.domain.platform.basket.impl;
 
-import com.example.ecommercewebapp.domain.platform.basket.impl.basketitem.BasketItem;
-import com.example.ecommercewebapp.domain.platform.customer.impl.Customer;
+import com.example.ecommercewebapp.library.rest.AbstractEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,17 +12,27 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Table(name = Basket.TABLE)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Basket {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int basketId;
-    private double totalAmount;
-    private int status;
-    @OneToOne
-    @JoinColumn(name = "customerId")
-    private Customer customer;
-    @OneToMany(mappedBy = "basket", cascade = CascadeType.ALL)
-    private List<BasketItem> basketItemList;
+public class Basket extends AbstractEntity {
+    public static final String TABLE = "basket";
+    public static final String COL_TOTAL_AMOUNT = "total_amount";
+    public static final String COL_STATUS = "status";
+    public static final String COL_CUSTOMER_ID = "customer_id";
+    public static final String COL_PRODUCTS = "products";
+
+
+    @Column(name = COL_TOTAL_AMOUNT)
+    private Double totalAmount;
+
+    @Column(name = COL_STATUS)
+    private Integer status;
+
+    @Column(name = COL_CUSTOMER_ID)
+    private String customerId;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Column(name = COL_PRODUCTS)
+    private List<String> products;
 }
