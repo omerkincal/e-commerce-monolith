@@ -36,7 +36,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerDto getCustomer(String id) {
+    public CustomerDto getById(String id) {
         return toDto(getCustomerEntity(id));
     }
 
@@ -57,7 +57,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerDto toDto(Customer customer){
         return CustomerDto.builder()
-                .customerId(customer.getCustomerId())
+                .id(customer.getId())
                 .name(customer.getName())
                 .surname(customer.getSurname())
                 .email(customer.getEmail())

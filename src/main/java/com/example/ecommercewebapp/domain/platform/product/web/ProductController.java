@@ -48,7 +48,7 @@ public class ProductController {
 
     public ProductResponse toResponse(ProductDto productDto){
         return ProductResponse.builder()
-                .productId(productDto.getProductId())
+                .productId(productDto.getId())
                 .name(productDto.getName())
                 .price(productDto.getPrice())
                 .categoryId(productDto.getCategoryId())

@@ -2,6 +2,7 @@ package com.example.ecommercewebapp.domain.platform.basket.web;
 
 
 import com.example.ecommercewebapp.domain.platform.basket.api.BasketService;
+import com.example.ecommercewebapp.library.rest.BaseController;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("baskets")
 @RequiredArgsConstructor
-public class BasketController {
+public class BasketController extends BaseController {
     private final BasketService service;
 
     /*

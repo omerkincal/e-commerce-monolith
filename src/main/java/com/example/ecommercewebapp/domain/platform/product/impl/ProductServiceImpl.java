@@ -20,14 +20,14 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public ProductDto save(ProductDto productDto, String shopAdminId) {
+    public ProductDto save(ProductDto productDto) {
             Product product = toEntity(productDto);
             product = repository.save(product);
             return toDto(product);
     }
 
     @Override
-    public ProductDto getProduct(String productId) {
+    public ProductDto getById(String productId) {
         ProductDto productDto = toDto(repository.findById(Integer.parseInt(productId)).get());
         return productDto;
     }
@@ -51,7 +51,6 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList());
     }
 
-    @Override
     public Product getProductEntity(String id){
         return repository.findById(Integer.parseInt(id)).get();
     }
@@ -65,18 +64,16 @@ public class ProductServiceImpl implements ProductService {
         repository.delete(product);
     }
 
-    @Override
     public ProductDto toDto(Product product){
         return ProductDto.builder()
                 .name(product.getName())
-                .productId(product.getProductId())
+                .id(product.getProductId())
                 .price(product.getPrice())
                 .quantity(product.getQuantity())
                 .categoryId(product.getCategory().getCategoryId())
                 .build();
     }
 
-    @Override
     public Product toEntity(ProductDto productDto){
         Product product = new Product();
         product.setName(productDto.getName());

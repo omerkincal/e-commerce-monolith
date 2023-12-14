@@ -1,5 +1,6 @@
 package com.example.ecommercewebapp.domain.platform.customer.impl;
 
+import com.example.ecommercewebapp.library.rest.AbstractEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,10 +15,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Customer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int customerId;
+public class Customer extends AbstractEntity {
     private String name;
     private String surname;
     private String email;

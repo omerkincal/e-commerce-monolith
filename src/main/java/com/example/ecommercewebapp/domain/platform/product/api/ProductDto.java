@@ -5,7 +5,7 @@ import lombok.*;
 @Data
 @Builder
 public class ProductDto {
-    private  int productId;
+    private  String id;
     private  String name;
     private  int quantity;
     private  double price;
@@ -14,15 +14,15 @@ public class ProductDto {
     public ProductDto() {
     }
 
-    public ProductDto(int productId, String name, int quantity, double price, int categoryId) {
-        this.productId = productId;
+    public ProductDto(String productId, String name, int quantity, double price, int categoryId) {
+        this.id = productId;
         this.name = name;
         this.quantity = quantity;
         this.price = price;
         this.categoryId = categoryId;
     }
 
-    public ProductDto(int productId) {
-        this.productId = productId;
+    public ProductDto(String productId) {
+        this.id = productId;
     }
 }

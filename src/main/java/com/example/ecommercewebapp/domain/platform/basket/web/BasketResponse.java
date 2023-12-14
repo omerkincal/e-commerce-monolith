@@ -1,17 +1,24 @@
 package com.example.ecommercewebapp.domain.platform.basket.web;
 
 import com.example.ecommercewebapp.domain.platform.basket.api.basketproduct.BasketProductDto;
-import lombok.Builder;
-import lombok.Data;
+import com.example.ecommercewebapp.domain.platform.customer.api.CustomerDto;
+import lombok.*;
 
+import java.util.Date;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
+@ToString
 public class BasketResponse {
-    private final int basketId;
-    private final double totalAmount;
-    private final int status;
-    private final int customerId;
-    private final List<BasketProductDto> basketItemList;
+    private String id;
+    private Date created;
+    private Date modified;
+    private Double totalAmount;
+    private Integer status;
+    private CustomerDto customer;
+    private List<BasketProductDto> products;
 }

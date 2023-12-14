@@ -1,13 +1,11 @@
 package com.example.ecommercewebapp.domain.platform.product.api;
 
-import com.example.ecommercewebapp.domain.platform.product.impl.Product;
-
 import java.util.List;
 
 public interface ProductService {
-    ProductDto save(ProductDto productDto, String shopAdminId);
+    ProductDto save(ProductDto productDto);
 
-    ProductDto getProduct(String productId);
+    ProductDto getById(String productId);
 
     ProductDto update(ProductDto dto, String id);
 
@@ -15,8 +13,4 @@ public interface ProductService {
 
     void delete(String id);
 
-    Product getProductEntity(String id);
-
-    Product toEntity(ProductDto productDto);
-    ProductDto toDto(Product product);
 }
