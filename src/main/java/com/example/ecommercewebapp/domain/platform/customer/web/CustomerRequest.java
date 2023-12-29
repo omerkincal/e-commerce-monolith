@@ -1,18 +1,21 @@
 package com.example.ecommercewebapp.domain.platform.customer.web;
 
 import com.example.ecommercewebapp.domain.platform.customer.api.CustomerDto;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
+@ToString
 public class CustomerRequest {
-    private final String name;
-    private final String surname;
-    private final String email;
-    private final String phone;
-    private final String address;
-    private final String password;
+    private String name;
+    private String surname;
+    private String email;
+    private String phone;
+    private String address;
+    private String password;
 
 
     public CustomerDto toDto(){

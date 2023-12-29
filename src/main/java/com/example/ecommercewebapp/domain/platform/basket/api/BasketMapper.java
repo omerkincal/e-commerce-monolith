@@ -29,7 +29,7 @@ public class BasketMapper {
 
         return BasketDto.builder()
                 .customer(CustomerDto.builder()
-                        .customerId(Integer.parseInt(basketRequest.getCustomerId()))
+                        .id(basketRequest.getCustomerId())
                         .build())
                 .products(products)
                 .build();

@@ -1,29 +1,28 @@
 package com.example.ecommercewebapp.domain.platform.product.web;
 
-import com.example.ecommercewebapp.domain.platform.product.api.ProductDto;
 import com.example.ecommercewebapp.domain.platform.product.api.ProductService;
+import com.example.ecommercewebapp.library.rest.BaseController;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("products")
 @RequiredArgsConstructor
-public class ProductController {
+@Log
+public class ProductController extends BaseController {
 
     private final ProductService service;
 
-    @PostMapping("{shopAdminId}")
-    public ProductResponse save(@RequestBody ProductRequest productRequest,
-                                @PathVariable String shopAdminId){
-        return toResponse(service.save(productRequest.toDto(), shopAdminId));
+    @PostMapping
+    public ProductResponse save(@RequestBody ProductRequest productRequest){
+        return toResponse(service.save(productRequest.toDto()));
     }
 
     @GetMapping("{id}")
     public ProductResponse getShopAdminById(@PathVariable String id){
-        return toResponse(service.getProduct(id));
+        return toResponse(service.getById(id));
     }
 
     @PutMapping("{id}")
@@ -38,21 +37,7 @@ public class ProductController {
         return "Başarıyla Silindi";
     }
 
-    @GetMapping
-    public List<ProductResponse> getAllShopAdmins(){
-        return service.getAllProducts()
-                .stream()
-                .map(productDto -> toResponse(productDto))
-                .collect(Collectors.toList());
-    }
 
-    public ProductResponse toResponse(ProductDto productDto){
-        return ProductResponse.builder()
-                .productId(productDto.getId())
-                .name(productDto.getName())
-                .price(productDto.getPrice())
-                .categoryId(productDto.getCategoryId())
-                .quantity(productDto.getQuantity())
-                .build();
-    }
+
+
 }

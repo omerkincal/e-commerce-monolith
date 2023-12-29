@@ -3,17 +3,24 @@ package com.example.ecommercewebapp.domain.platform.customer.api;
 import com.example.ecommercewebapp.domain.platform.basket.api.BasketDto;
 import lombok.*;
 
+import java.util.Date;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
+@ToString
 public class CustomerDto {
     private String id;
-    private final String name;
-    private final String surname;
-    private final String email;
-    private final String phone;
-    private final String address;
-    private final String password;
-    private final List<BasketDto> basketList;
+    private Date created;
+    private Date modified;
+    private String name;
+    private String surname;
+    private String email;
+    private String phone;
+    private String address;
+    private String password;
+    private List<BasketDto> basketList;
 }

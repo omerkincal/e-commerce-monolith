@@ -2,6 +2,7 @@ package com.example.ecommercewebapp.domain.platform.customer.web;
 
 import com.example.ecommercewebapp.domain.platform.customer.api.CustomerDto;
 import com.example.ecommercewebapp.domain.platform.customer.api.CustomerService;
+import com.example.ecommercewebapp.library.rest.BaseController;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("customers")
 @RequiredArgsConstructor
-public class CustomerController {
+public class CustomerController extends BaseController {
     private final CustomerService service;
 
     @PostMapping
@@ -22,7 +23,7 @@ public class CustomerController {
 
     @GetMapping("{id}")
     public CustomerResponse getCustomerById(@PathVariable String id){
-        return toResponse(service.getCustomer(id));
+        return toResponse(service.getById(id));
     }
 
     @GetMapping
@@ -48,15 +49,13 @@ public class CustomerController {
 
     public CustomerResponse toResponse(CustomerDto customerDto){
         return CustomerResponse.builder()
-                .customerId(customerDto.getCustomerId())
+                .id(customerDto.getId())
                 .name(customerDto.getName())
                 .surname(customerDto.getSurname())
                 .address(customerDto.getAddress())
                 .password(customerDto.getPassword())
                 .email(customerDto.getEmail())
                 .phone(customerDto.getPhone())
-                .message("Successfull")
-                .code(200)
                 .build();
     }
 
