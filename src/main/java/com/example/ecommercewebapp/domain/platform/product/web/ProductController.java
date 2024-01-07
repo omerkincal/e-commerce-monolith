@@ -1,9 +1,15 @@
 package com.example.ecommercewebapp.domain.platform.product.web;
 
+import com.example.ecommercewebapp.domain.platform.product.api.ProductMapper;
 import com.example.ecommercewebapp.domain.platform.product.api.ProductService;
 import com.example.ecommercewebapp.library.rest.BaseController;
+import com.example.ecommercewebapp.library.rest.MetaResponse;
+import com.example.ecommercewebapp.library.rest.PageResponse;
+import com.example.ecommercewebapp.library.rest.Response;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -15,27 +21,40 @@ public class ProductController extends BaseController {
 
     private final ProductService service;
 
+
+    @GetMapping
+    public Response<PageResponse<ProductResponse>> getAllProducts(Pageable pageable) {
+        return respond(ProductMapper.toPageResponse(service.getAllProducts(pageable)));
+    }
     @PostMapping
-    public ProductResponse save(@RequestBody ProductRequest productRequest){
-        return toResponse(service.save(productRequest.toDto()));
+    //@PreAuthorize("hasAnyAuthority('super_admin','product_write')")
+    public Response<ProductResponse> createProduct(@Valid @RequestBody ProductRequest request) {
+        return respond(ProductMapper.toResponse(service.save(ProductMapper.toDto(request))));
     }
 
     @GetMapping("{id}")
-    public ProductResponse getShopAdminById(@PathVariable String id){
-        return toResponse(service.getById(id));
+    public Response<ProductResponse> getShopAdminById(@PathVariable String id){
+        return respond(ProductMapper.toResponse(service.getById(id)));
     }
 
     @PutMapping("{id}")
-    public ProductResponse update(@PathVariable String id,
-                               @RequestBody ProductRequest productRequest){
-        return toResponse(service.update(productRequest.toDto(),id));
+    public Response<ProductResponse> update(@PathVariable String id, @RequestBody ProductRequest productRequest){
+        return respond(ProductMapper.toResponse(service.update(ProductMapper.toDto(productRequest),id)));
     }
 
-    @DeleteMapping("{id}")
-    public String delete(@PathVariable String id){
+    @DeleteMapping("/{id}")
+    //@PreAuthorize("hasAnyAuthority('super_admin','product_write')")
+    public Response<Void> deleteProduct(@PathVariable String id) {
         service.delete(id);
-        return "Başarıyla Silindi";
+        return new Response<>(MetaResponse.success());
     }
+
+    /*@GetMapping("category/{categoryId}")
+    @PreAuthorize("hasAnyAuthority('super_admin','product_read')")
+    @Log(response = false)
+    public Response<PageResponse<ProductResponse>> getProductsByCategoryId(@PathVariable String categoryId, Pageable pageable) {
+        return respond(ProductMapper.toPageResponse(service.findProductsByCategoryId(categoryId,pageable)));
+    }*/
 
 
 

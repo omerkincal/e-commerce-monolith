@@ -31,7 +31,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto updateCategory(CategoryDto categoryDto, String id) {
         Category category = getCategoryEntity(id);
-        category.setCategoryName(categoryDto.getCategoryName());
+        category.setName(categoryDto.getName());
         category = repository.save(category);
         return toDto(category);
     }
@@ -58,14 +58,14 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto toDto(Category category){
         return CategoryDto.builder()
-                .categoryId(category.getCategoryId())
-                .categoryName(category.getCategoryName())
+                .id(category.getId())
+                .name(category.getName())
                 .build();
     }
     @Override
     public Category toEntity(CategoryDto categoryDto){
         Category category = new Category();
-        category.setCategoryName(categoryDto.getCategoryName());
+        category.setName(categoryDto.getName());
         return category;
     }
 }

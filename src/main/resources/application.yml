@@ -8,7 +8,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/e-commerce?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: root
-    password: omeR%50hajk
+    password: password
     driverClassName: com.mysql.jdbc.Driver
   jpa:
     hibernate:

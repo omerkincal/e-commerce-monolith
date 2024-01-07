@@ -1,25 +1,24 @@
 package com.example.ecommercewebapp.domain.platform.category.impl;
 
-import com.example.ecommercewebapp.domain.platform.product.impl.Product;
-import jakarta.persistence.*;
+import com.example.ecommercewebapp.library.rest.AbstractEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Category {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int categoryId;
-    private String categoryName;
+@Table(name = Category.TABLE)
+public class Category extends AbstractEntity {
+    public static final String TABLE = "category";
+    private static final String COL_NAME = "name";
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    private List<Product> productList;
+    @Column(name = COL_NAME)
+    private String name;
 }

@@ -1,6 +1,7 @@
 package com.example.ecommercewebapp.domain.platform.product.api;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ProductService {
     ProductDto save(ProductDto productDto);
@@ -9,7 +10,7 @@ public interface ProductService {
 
     ProductDto update(ProductDto dto, String id);
 
-    List<ProductDto> getAllProducts();
+    Page<ProductDto> getAllProducts(Pageable pageable);
 
     void delete(String id);
 

@@ -54,11 +54,10 @@ public class CategoryController {
 
     public CategoryResponse toResponse(CategoryDto categoryDto){
         return CategoryResponse.builder()
-                .categoryName(categoryDto.getCategoryName())
-                .categoryId(categoryDto.getCategoryId())
-                .shopId(categoryDto.getShopId())
-                .code(200)
-                .message("succesfull")
+                .id(categoryDto.getId())
+                .created(categoryDto.getCreated())
+                .modified(categoryDto.getModified())
+                .name(categoryDto.getName())
                 .build();
     }
 }
