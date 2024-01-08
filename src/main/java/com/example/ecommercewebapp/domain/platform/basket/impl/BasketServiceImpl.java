@@ -5,25 +5,30 @@ import com.example.ecommercewebapp.domain.platform.basket.api.BasketService;
 import com.example.ecommercewebapp.domain.platform.basket.impl.basketproduct.BasketProductServiceImpl;
 import com.example.ecommercewebapp.domain.platform.customer.api.CustomerService;
 import com.example.ecommercewebapp.domain.platform.product.impl.ProductServiceImpl;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 
 @Service
-@RequiredArgsConstructor
-public class BasketServiceImpl implements BasketService{
+public class BasketServiceImpl implements BasketService {
 
-    private final BasketRepository repository;
+    /*private BasketRepository repository;
 
-    private final CustomerService customerService;
+    private CustomerService customerService;
 
-    private final ProductServiceImpl productService;
+    private ProductServiceImpl productService;
 
-    private final BasketProductServiceImpl basketItemService;
+    private BasketProductServiceImpl basketItemService;
 
 
     public final int BASKET_STATUS_NONE = 0;
     public final int BASKET_STATUS_SALED = 1;
+
+    public BasketServiceImpl(BasketRepository repository, CustomerService customerService, ProductServiceImpl productService, BasketProductServiceImpl basketItemService) {
+        this.repository = repository;
+        this.customerService = customerService;
+        this.productService = productService;
+        this.basketItemService = basketItemService;
+    }*/
 
     @Override
     public BasketDto addProductToBasket(BasketDto basketDto) {

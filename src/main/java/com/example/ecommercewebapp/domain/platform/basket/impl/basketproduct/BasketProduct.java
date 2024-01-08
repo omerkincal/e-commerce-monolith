@@ -21,7 +21,7 @@ public class BasketProduct extends AbstractEntity {
     public static final String COL_PRODUCT_ID = "product_id";
     public static final String COL_QUANTITY = "quantity";
     public static final String COL_BASKET_ID = "basket_id";
-    public static final String COL_BASKET_PRODUCT_AMOUNT = "basket_id";
+    public static final String COL_BASKET_PRODUCT_AMOUNT = "basket_product_amount";
 
     @Column(name = COL_BASKET_PRODUCT_AMOUNT)
     private Double basketProductAmount;

@@ -1,27 +1,31 @@
 package com.example.ecommercewebapp.library.security;
 
-import jakarta.servlet.Filter;
+import com.example.ecommercewebapp.domain.auth.user.api.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
 
-    /*private JwtFilter jwtFilter;
-    private UserDetailsService userDetailsService;
+    private JwtFilter jwtFilter;
+    private BCryptPasswordEncoder passwordEncoder;
+    private UserService userService;
 
-    public SecurityConfig(JwtFilter jwtFilter, UserDetailsService userDetailsService) {
+    public SecurityConfig(JwtFilter jwtFilter, BCryptPasswordEncoder passwordEncoder, UserService userService) {
         this.jwtFilter = jwtFilter;
-        this.userDetailsService = userDetailsService;
+        this.passwordEncoder = passwordEncoder;
+        this.userService = userService;
     }
 
 
@@ -38,10 +42,19 @@ public class SecurityConfig {
                 .sessionManagement(x -> x.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .build();
+        return http.build();
     }
 
-    private AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService);
-    }*/
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder);
+        return authenticationProvider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 }

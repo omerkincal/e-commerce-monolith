@@ -8,26 +8,24 @@ import com.example.ecommercewebapp.library.rest.PageResponse;
 import com.example.ecommercewebapp.library.rest.Response;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
 @RestController
 @RequestMapping("products")
 @RequiredArgsConstructor
-@Log
 public class ProductController extends BaseController {
 
     private final ProductService service;
-
 
     @GetMapping
     public Response<PageResponse<ProductResponse>> getAllProducts(Pageable pageable) {
         return respond(ProductMapper.toPageResponse(service.getAllProducts(pageable)));
     }
     @PostMapping
-    //@PreAuthorize("hasAnyAuthority('super_admin','product_write')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public Response<ProductResponse> createProduct(@Valid @RequestBody ProductRequest request) {
         return respond(ProductMapper.toResponse(service.save(ProductMapper.toDto(request))));
     }
@@ -43,7 +41,6 @@ public class ProductController extends BaseController {
     }
 
     @DeleteMapping("/{id}")
-    //@PreAuthorize("hasAnyAuthority('super_admin','product_write')")
     public Response<Void> deleteProduct(@PathVariable String id) {
         service.delete(id);
         return new Response<>(MetaResponse.success());
@@ -55,8 +52,4 @@ public class ProductController extends BaseController {
     public Response<PageResponse<ProductResponse>> getProductsByCategoryId(@PathVariable String categoryId, Pageable pageable) {
         return respond(ProductMapper.toPageResponse(service.findProductsByCategoryId(categoryId,pageable)));
     }*/
-
-
-
-
 }
