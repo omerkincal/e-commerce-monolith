@@ -1,19 +1,23 @@
 package com.example.ecommercewebapp.domain.platform.product.impl;
 
 import com.example.ecommercewebapp.domain.platform.category.api.CategoryDto;
+import com.example.ecommercewebapp.domain.platform.category.api.CategoryService;
 import com.example.ecommercewebapp.domain.platform.product.api.ProductDto;
 
 public class ProductMapper {
     public ProductMapper(){
     }
 
-    public static ProductDto toDto(Product product){
+    public static ProductDto toDto(Product product, CategoryService categoryService){
         return ProductDto.builder()
+                .id(product.getId())
+                .created(product.getCreated())
+                .modified(product.getModified())
                 .name(product.getName())
                 .price(product.getPrice())
                 .stock(product.getStock())
                 .description(product.getDescription())
-                .category(CategoryDto.builder().id(product.getCategoryId()).build())
+                .category(categoryService.getById(product.getCategoryId()))
                 .build();
     }
 

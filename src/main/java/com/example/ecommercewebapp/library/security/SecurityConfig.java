@@ -1,6 +1,7 @@
 package com.example.ecommercewebapp.library.security;
 
 import com.example.ecommercewebapp.domain.auth.user.api.UserService;
+import org.springframework.boot.autoconfigure.security.reactive.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -36,14 +37,15 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(x ->
-                        x.requestMatchers("auth/**").permitAll())
-                .authorizeHttpRequests(x -> x.anyRequest().permitAll())
+                        x.requestMatchers("auth/**").permitAll()
+                        .requestMatchers("users/**").permitAll())
+                //.authorizeHttpRequests(x -> x.anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(x -> x.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider())
-                .build();
+                .authenticationProvider(authenticationProvider());
         return http.build();
     }
+
 
     @Bean
     public AuthenticationProvider authenticationProvider() {

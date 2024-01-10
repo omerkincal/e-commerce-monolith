@@ -1,5 +1,6 @@
 package com.example.ecommercewebapp.domain.platform.product.impl;
 
+import com.example.ecommercewebapp.domain.platform.category.api.CategoryService;
 import com.example.ecommercewebapp.domain.platform.product.api.ProductDto;
 import com.example.ecommercewebapp.domain.platform.product.api.ProductService;
 import com.example.ecommercewebapp.library.enums.MessageCodes;
@@ -15,29 +16,30 @@ import org.springframework.stereotype.Service;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository repository;
+    private final CategoryService categoryService;
 
 
     @Override
     public ProductDto save(ProductDto productDto) {
-        return ProductMapper.toDto(repository.save(ProductMapper.toEntity(new Product(),productDto)));
+        return ProductMapper.toDto(repository.save(ProductMapper.toEntity(new Product(),productDto)),categoryService);
     }
 
     @Override
     public ProductDto getById(String productId) {
         return ProductMapper.toDto(repository.findById(productId).orElseThrow(()->
-                new CoreException(MessageCodes.ENTITY_NOT_FOUND, Product.class.getSimpleName(), productId)));
+                new CoreException(MessageCodes.ENTITY_NOT_FOUND, Product.class.getSimpleName(), productId)),categoryService);
     }
 
     @Override
     public ProductDto update(ProductDto dto, String id) {
         Product product = repository.findById(id).orElseThrow(
                 ()-> new CoreException(MessageCodes.ENTITY_NOT_FOUND, Product.class.getSimpleName(), id));
-        return ProductMapper.toDto(repository.save(setProduct(product, dto)));
+        return ProductMapper.toDto(repository.save(setProduct(product, dto)),categoryService);
     }
 
     @Override
     public Page<ProductDto> getAllProducts(Pageable pageable) {
-        return PageUtil.pageToDto(repository.findAll(pageable), product -> ProductMapper.toDto(product));
+        return PageUtil.pageToDto(repository.findAll(pageable), product -> ProductMapper.toDto(product,categoryService));
     }
 
     @Override

@@ -1,7 +1,13 @@
 package com.example.ecommercewebapp.domain.auth.user.api;
 
+import com.example.ecommercewebapp.domain.auth.user.impl.User;
 import com.example.ecommercewebapp.domain.auth.user.web.UserRequest;
 import com.example.ecommercewebapp.domain.auth.user.web.UserResponse;
+import com.example.ecommercewebapp.domain.platform.product.api.ProductDto;
+import com.example.ecommercewebapp.domain.platform.product.api.ProductMapper;
+import com.example.ecommercewebapp.domain.platform.product.web.ProductResponse;
+import com.example.ecommercewebapp.library.utils.PageUtil;
+import org.springframework.data.domain.Page;
 
 public class UserMapper {
 
@@ -21,7 +27,7 @@ public class UserMapper {
                 .build();
     }
 
-    public static UserResponse toDto(UserDto user){
+    public static UserResponse toResponse(UserDto user){
         return UserResponse.builder()
                 .id(user.getId())
                 .created(user.getCreated())
@@ -36,5 +42,9 @@ public class UserMapper {
                 .password(user.getPassword())
                 .userType(user.getUserType())
                 .build();
+    }
+
+    public static Page<UserResponse> toPageResponse(Page<UserDto> userList) {
+        return PageUtil.pageToDto(userList, UserMapper::toResponse);
     }
 }

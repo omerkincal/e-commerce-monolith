@@ -2,7 +2,13 @@ package com.example.ecommercewebapp.domain.platform.category.impl;
 
 import com.example.ecommercewebapp.domain.platform.category.api.CategoryDto;
 import com.example.ecommercewebapp.domain.platform.category.api.CategoryService;
+import com.example.ecommercewebapp.library.enums.MessageCodes;
+import com.example.ecommercewebapp.library.exception.CoreException;
+import com.example.ecommercewebapp.library.utils.PageUtil;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,56 +22,41 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    public CategoryDto save(CategoryDto categoryDto) {
-        Category category = toEntity(categoryDto);
-        category = repository.save(category);
-        return toDto(category);
+    public CategoryDto createCategory(CategoryDto categoryDto) {
+        return CategoryMapper.toDto(repository.save(CategoryMapper.toEntity(new Category(), categoryDto)));
     }
 
     @Override
-    public CategoryDto getCategory(String categoryId) {
-        Category category = repository.findById(Integer.parseInt(categoryId)).get();
-        return toDto(category);
+    public CategoryDto getById(String categoryId) {
+        return CategoryMapper.toDto(repository.findById(categoryId).orElseThrow(
+                () -> new CoreException(MessageCodes.ENTITY_NOT_FOUND, Category.class.getSimpleName(), categoryId)));
     }
 
     @Override
-    public CategoryDto updateCategory(CategoryDto categoryDto, String id) {
-        Category category = getCategoryEntity(id);
-        category.setName(categoryDto.getName());
-        category = repository.save(category);
-        return toDto(category);
+    public CategoryDto update(CategoryDto categoryDto, String id) {
+        repository.findById(id).orElseThrow(
+                () -> new CoreException(MessageCodes.ENTITY_NOT_FOUND, Category.class.getSimpleName(), id));
+        return CategoryMapper.toDto(repository.save(setCategory(new Category(), categoryDto)));
     }
 
     @Override
-    public List<CategoryDto> getAllCategory() {
-        return repository.findAll()
-                .stream()
-                .map(category -> toDto(category))
-                .collect(Collectors.toList());
+    public Page<CategoryDto> getAllCategory(Pageable pageable) {
+        return PageUtil.pageToDto(repository.findAll(pageable), category -> CategoryMapper.toDto(category));
     }
 
     @Override
+    @Transactional
     public void delete(String id) {
-        Category category = getCategoryEntity(id);
+        Category category = repository.findById(id).orElseThrow(
+                () -> new CoreException(MessageCodes.ENTITY_NOT_FOUND, Category.class.getSimpleName(), id));
         repository.delete(category);
     }
 
-    @Override
-    public Category getCategoryEntity(String id){
-        return repository.findById(Integer.parseInt(id)).get();
-    }
 
-    @Override
-    public CategoryDto toDto(Category category){
-        return CategoryDto.builder()
-                .id(category.getId())
-                .name(category.getName())
-                .build();
-    }
-    @Override
-    public Category toEntity(CategoryDto categoryDto){
-        Category category = new Category();
+    private Category setCategory(Category category, CategoryDto categoryDto) {
         category.setName(categoryDto.getName());
+        category.setDescription(categoryDto.getDescription());
         return category;
+
     }
 }

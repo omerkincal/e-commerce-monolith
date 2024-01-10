@@ -18,7 +18,11 @@ import lombok.Setter;
 public class Category extends AbstractEntity {
     public static final String TABLE = "category";
     private static final String COL_NAME = "name";
+    private static final String COL_DESCRIPTION = "description";
 
     @Column(name = COL_NAME)
     private String name;
+
+    @Column(name = COL_DESCRIPTION)
+    private String description;
 }

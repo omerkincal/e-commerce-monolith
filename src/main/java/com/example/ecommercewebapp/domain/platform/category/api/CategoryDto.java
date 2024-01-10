@@ -12,4 +12,5 @@ public class CategoryDto {
     private Date created;
     private Date modified;
     private String name;
+    private String description;
 }

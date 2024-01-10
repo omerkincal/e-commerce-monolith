@@ -25,7 +25,7 @@ public class ProductController extends BaseController {
         return respond(ProductMapper.toPageResponse(service.getAllProducts(pageable)));
     }
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Response<ProductResponse> createProduct(@Valid @RequestBody ProductRequest request) {
         return respond(ProductMapper.toResponse(service.save(ProductMapper.toDto(request))));
     }
