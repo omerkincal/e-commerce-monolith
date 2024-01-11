@@ -1,5 +1,6 @@
 package com.example.ecommercewebapp.domain.auth.user.impl;
 
+import com.example.ecommercewebapp.domain.auth.auth.api.SignUpDto;
 import com.example.ecommercewebapp.domain.auth.user.api.UserDto;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -35,4 +36,18 @@ public class UserMapper {
         user.setUserType(dto.getUserType());
         return user;
     }
+
+        public static UserDto toDto(SignUpDto signUpDto) {
+            UserDto user = new UserDto();
+            user.setUsername(signUpDto.username());
+            user.setPassword(signUpDto.password());
+            user.setEmail(signUpDto.email());
+            user.setName(signUpDto.name());
+            user.setSurname(signUpDto.surname());
+            user.setPhoneNumber(signUpDto.phoneNumber());
+            user.setUserType(signUpDto.userType());
+            user.setVerified(false);
+            user.setExtensionNumber(signUpDto.extensionNumber());
+            return user;
+        }
 }

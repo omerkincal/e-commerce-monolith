@@ -1,6 +1,5 @@
 package com.example.ecommercewebapp.library.security;
 
-import com.example.ecommercewebapp.domain.auth.user.api.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,11 +17,11 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
 
     private JwtService jwtService;
-    private UserService userService;
+    private UserDetailsServiceImpl userDetailsService;
 
-    public JwtFilter(JwtService jwtService, UserService userService) {
+    public JwtFilter(JwtService jwtService, UserDetailsServiceImpl userDetailsService) {
         this.jwtService = jwtService;
-        this.userService = userService;
+        this.userDetailsService = userDetailsService;
     }
 
 
@@ -34,11 +33,11 @@ public class JwtFilter extends OncePerRequestFilter {
         String token = null;
         String username = null;
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);
+            token = authHeader.replace("Bearer ","");
             username = jwtService.extractUsername(token);
         }
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            UserDetails user = userService.loadUserByUsername(username);
+            UserDetails user = userDetailsService.loadUserByUsername(username);
             if (jwtService.validateToken(token, user)){
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

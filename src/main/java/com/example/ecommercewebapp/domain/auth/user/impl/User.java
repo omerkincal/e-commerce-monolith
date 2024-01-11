@@ -5,11 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -18,7 +14,7 @@ import java.util.Set;
 @Table(name = User.TABLE, uniqueConstraints = {
         @UniqueConstraint(columnNames = User.COL_EMAIL)
 })
-public class User extends AbstractEntity implements UserDetails {
+public class User extends AbstractEntity {
     public static final String TABLE = "usr";
     public static final String COL_EMAIL = "email";
 
@@ -61,31 +57,5 @@ public class User extends AbstractEntity implements UserDetails {
 
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<GrantedAuthority> authorities;
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(userType.name()));
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
 
 }

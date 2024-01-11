@@ -1,7 +1,5 @@
 package com.example.ecommercewebapp.library.security;
 
-import com.example.ecommercewebapp.domain.auth.user.api.UserService;
-import org.springframework.boot.autoconfigure.security.reactive.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,9 +19,9 @@ public class SecurityConfig {
 
     private JwtFilter jwtFilter;
     private BCryptPasswordEncoder passwordEncoder;
-    private UserService userService;
+    private UserDetailsServiceImpl userService;
 
-    public SecurityConfig(JwtFilter jwtFilter, BCryptPasswordEncoder passwordEncoder, UserService userService) {
+    public SecurityConfig(JwtFilter jwtFilter, BCryptPasswordEncoder passwordEncoder, UserDetailsServiceImpl userService) {
         this.jwtFilter = jwtFilter;
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
@@ -35,12 +33,11 @@ public class SecurityConfig {
         http
                 .headers(x -> x.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .csrf(AbstractHttpConfigurer::disable)
-                .formLogin(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(x ->
-                        x.requestMatchers("auth/**").permitAll()
-                        .requestMatchers("users/**").permitAll())
+                .authorizeHttpRequests(x -> x.requestMatchers("/auth/admin/login").permitAll())
+                .authorizeHttpRequests(x -> x.requestMatchers("/auth/login/**").permitAll())
                 //.authorizeHttpRequests(x -> x.anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement(x -> x.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider());
         return http.build();

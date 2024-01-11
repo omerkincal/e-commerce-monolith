@@ -29,18 +29,12 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = repository.findByUsernameOrEmail(username, username);
-        Set<GrantedAuthority> authorities = new HashSet<>();
-        GrantedAuthority authority = new SimpleGrantedAuthority(user.get().getUserType().name());
-        authorities.add(authority);
-        user.get().setAuthorities(authorities);
-        return user.get();
-    }
+
 
     @Override
     public UserDto createUser(UserDto userDto) {
+        repository.findByUsernameOrEmail(userDto.getUsername(), userDto.getEmail()).orElseThrow(
+                () -> new CoreException(MessageCodes.ENTITY_ALREADY_EXISTS, User.class.getSimpleName(), userDto.getUsername()));
         return UserMapper.toDto(repository.save(UserMapper.toEntity(new User(),userDto, passwordEncoder)));
     }
 
@@ -68,6 +62,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByUsernameAndPasswordAndUserType(String username, String password, UserType userType) {
+        System.out.println(passwordEncoder.encode(password));
         return repository.findByUsernameAndPasswordAndUserType(username, passwordEncoder.encode(password), userType)
                 .orElseThrow(() -> new CoreException(MessageCodes.ENTITY_NOT_FOUND, User.class.getSimpleName(), username));
     }

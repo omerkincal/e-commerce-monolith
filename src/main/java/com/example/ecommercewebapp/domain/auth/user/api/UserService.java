@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-public interface UserService extends UserDetailsService {
+public interface UserService {
     UserDto createUser(UserDto userDto);
     UserDto getById(String id);
     UserDto update(UserDto userDto, String id);
