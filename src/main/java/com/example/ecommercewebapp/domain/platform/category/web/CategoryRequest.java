@@ -1,12 +1,14 @@
 package com.example.ecommercewebapp.domain.platform.category.web;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
+@ToString
 public class CategoryRequest {
-
     private String name;
     private String description;
 

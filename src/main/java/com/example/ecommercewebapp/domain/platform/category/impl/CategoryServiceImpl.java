@@ -15,10 +15,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
-    private final CategoryRepository repository;
+    private CategoryRepository repository;
+
+    public CategoryServiceImpl(CategoryRepository repository) {
+        this.repository = repository;
+    }
 
 
     @Override
@@ -34,9 +37,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto update(CategoryDto categoryDto, String id) {
-        repository.findById(id).orElseThrow(
+        Category category = repository.findById(id).orElseThrow(
                 () -> new CoreException(MessageCodes.ENTITY_NOT_FOUND, Category.class.getSimpleName(), id));
-        return CategoryMapper.toDto(repository.save(setCategory(new Category(), categoryDto)));
+        return CategoryMapper.toDto(repository.save(setCategory(category, categoryDto)));
     }
 
     @Override

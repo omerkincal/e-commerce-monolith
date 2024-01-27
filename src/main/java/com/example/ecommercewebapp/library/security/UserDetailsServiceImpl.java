@@ -22,12 +22,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = userRepository.findByUsernameOrEmail(username, username);
+    public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsernameOrEmail(username, username).orElseThrow(
+                () -> new UsernameNotFoundException("User not found with username or email: " + username)
+        );
         Set<GrantedAuthority> authorities = new HashSet<>();
-        GrantedAuthority authority = new SimpleGrantedAuthority(user.get().getUserType().name());
+        GrantedAuthority authority = new SimpleGrantedAuthority(user.getUserType().name());
         authorities.add(authority);
-        user.get().setAuthorities(authorities);
-        return new CustomUserDetails(user.get());
+        user.setAuthorities(authorities);
+        return new CustomUserDetails(user);
     }
 }

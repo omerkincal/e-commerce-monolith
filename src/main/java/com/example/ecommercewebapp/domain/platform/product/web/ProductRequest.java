@@ -1,11 +1,7 @@
 package com.example.ecommercewebapp.domain.platform.product.web;
 
-import com.example.ecommercewebapp.domain.platform.product.api.ProductDto;
-import jakarta.persistence.Column;
 import lombok.Builder;
 import lombok.Data;
-
-import java.util.Date;
 
 @Data
 @Builder

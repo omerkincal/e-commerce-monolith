@@ -30,12 +30,17 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
     @Override
     public UserDto createUser(UserDto userDto) {
-        repository.findByUsernameOrEmail(userDto.getUsername(), userDto.getEmail()).orElseThrow(
-                () -> new CoreException(MessageCodes.ENTITY_ALREADY_EXISTS, User.class.getSimpleName(), userDto.getUsername()));
-        return UserMapper.toDto(repository.save(UserMapper.toEntity(new User(),userDto, passwordEncoder)));
+        checkUserExists(userDto.getUsername(), userDto.getEmail());
+        return UserMapper.toDto(repository.save(UserMapper.toEntity(new User(), userDto, passwordEncoder)));
+    }
+
+    public void checkUserExists(String username, String email) {
+        repository.findByUsernameOrEmail(username, email)
+                .ifPresent(u -> {
+                    throw new CoreException(MessageCodes.ENTITY_ALREADY_EXISTS, User.class.getSimpleName(), email);
+                });
     }
 
     @Override

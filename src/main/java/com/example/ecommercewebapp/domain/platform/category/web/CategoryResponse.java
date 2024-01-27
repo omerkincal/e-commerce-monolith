@@ -1,12 +1,15 @@
 package com.example.ecommercewebapp.domain.platform.category.web;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.util.Date;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
+@ToString
 public class CategoryResponse {
     private String id;
     private Date created;

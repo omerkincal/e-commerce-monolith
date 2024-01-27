@@ -8,16 +8,14 @@ import com.example.ecommercewebapp.domain.auth.user.api.UserDto;
 import com.example.ecommercewebapp.domain.auth.user.api.UserService;
 import com.example.ecommercewebapp.domain.auth.user.impl.User;
 import com.example.ecommercewebapp.domain.auth.user.impl.UserMapper;
+import com.example.ecommercewebapp.library.security.CustomUserDetails;
 import com.example.ecommercewebapp.library.security.JwtService;
 import com.example.ecommercewebapp.library.security.UserDetailsServiceImpl;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,10 +26,10 @@ public class AuthServiceImpl implements AuthService {
     private JwtService jwtService;
     private BCryptPasswordEncoder passwordEncoder;
     private AuthenticationManager authenticationManager;
-    private UserDetailsService userDetailsService;
+    private UserDetailsServiceImpl userDetailsService;
 
 
-    public AuthServiceImpl(UserService userService, JwtService jwtService, BCryptPasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, UserDetailsService userDetailsService) {
+    public AuthServiceImpl(UserService userService, JwtService jwtService, BCryptPasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, UserDetailsServiceImpl userDetailsService) {
         this.userService = userService;
         this.jwtService = jwtService;
         this.passwordEncoder = passwordEncoder;
@@ -41,11 +39,11 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public TokenDto login(LoginDto loginDto) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.username(), loginDto.password()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        UserDetails user = userDetailsService.loadUserByUsername(loginDto.username());
+        CustomUserDetails user = userDetailsService.loadUserByUsername(loginDto.username());
         String token = jwtService.generateToken(user.getUsername());
+
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return new TokenDto(token);
     }
@@ -53,7 +51,12 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public TokenDto signUp(SignUpDto signUpDto) {
         UserDto user = userService.createUser(UserMapper.toDto(signUpDto));
-        String token = jwtService.generateToken(user.getUsername());
+        User savedUser = UserMapper.toEntity(new User() , user , passwordEncoder);
+        UserDetails userDetails = new CustomUserDetails(savedUser);
+        String token = jwtService.generateToken(userDetails.getUsername());
         return new TokenDto(token);
     }
+
+
+
 }
