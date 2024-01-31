@@ -20,8 +20,8 @@ public class BasketRequest {
     @NotNull(message = "validation.required.quantity")
     private Integer quantity;
 
-    @NotNull(message = "validation.required.customerId")
-    @NotBlank(message = "validation.required.customerId")
-    @NotEmpty(message = "validation.required.customerId")
-    private String customerId;
+    @NotNull(message = "validation.required.userId")
+    @NotBlank(message = "validation.required.userId")
+    @NotEmpty(message = "validation.required.userId")
+    private String userId;
 }

@@ -1,13 +1,16 @@
 package com.example.ecommercewebapp.domain.platform.product.web;
 
 import com.example.ecommercewebapp.domain.platform.category.api.CategoryDto;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.util.Date;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
+@ToString
 public class ProductResponse {
     private String id;
     private Date created;

@@ -19,7 +19,7 @@ public class Basket extends AbstractEntity {
     public static final String TABLE = "basket";
     public static final String COL_TOTAL_AMOUNT = "total_amount";
     public static final String COL_STATUS = "status";
-    public static final String COL_CUSTOMER_ID = "customer_id";
+    public static final String COL_USER_ID = "user_id";
     public static final String COL_PRODUCTS = "products";
 
 
@@ -29,10 +29,6 @@ public class Basket extends AbstractEntity {
     @Column(name = COL_STATUS)
     private Integer status;
 
-    @Column(name = COL_CUSTOMER_ID)
-    private String customerId;
-
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Column(name = COL_PRODUCTS)
-    private List<String> products;
+    @Column(name = COL_USER_ID)
+    private String userId;
 }

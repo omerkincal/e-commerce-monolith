@@ -12,11 +12,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
-    private final ProductRepository repository;
-    private final CategoryService categoryService;
+    private ProductRepository repository;
+    private CategoryService categoryService;
+
+    public ProductServiceImpl(ProductRepository repository, CategoryService categoryService) {
+        this.repository = repository;
+        this.categoryService = categoryService;
+    }
 
 
     @Override

@@ -1,10 +1,13 @@
 package com.example.ecommercewebapp.domain.platform.product.web;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
+@ToString
 public class ProductRequest {
     private String name;
     private String description;

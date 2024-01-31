@@ -1,6 +1,8 @@
 package com.example.ecommercewebapp.domain.platform.basket.api;
 
+import com.example.ecommercewebapp.domain.auth.user.api.UserDto;
 import com.example.ecommercewebapp.domain.platform.basket.api.basketproduct.BasketProductDto;
+import com.example.ecommercewebapp.domain.platform.basket.impl.basketproduct.BasketProduct;
 import com.example.ecommercewebapp.domain.platform.basket.web.BasketRequest;
 import com.example.ecommercewebapp.domain.platform.basket.web.BasketResponse;
 import com.example.ecommercewebapp.domain.platform.customer.api.CustomerDto;
@@ -19,17 +21,14 @@ public class BasketMapper {
         List<BasketProductDto> products = new ArrayList<>();
         BasketProductDto product = new BasketProductDto();
 
-        product.setProduct(ProductDto
-                .builder()
-                .id(basketRequest.getProductId())
-                .build());
+        product.setProduct(ProductDto.builder().id(basketRequest.getProductId()).build());
         product.setQuantity((basketRequest.getQuantity()));
         products.add(product);
 
 
         return BasketDto.builder()
-                .customer(CustomerDto.builder()
-                        .id(basketRequest.getCustomerId())
+                .user(UserDto.builder()
+                        .id(basketRequest.getUserId())
                         .build())
                 .products(products)
                 .build();
@@ -40,7 +39,7 @@ public class BasketMapper {
                 .id(basketDto.getId())
                 .created(basketDto.getCreated())
                 .modified(basketDto.getModified())
-                .customer(basketDto.getCustomer())
+                .user(basketDto.getUser())
                 .totalAmount(basketDto.getTotalAmount())
                 .status(basketDto.getStatus())
                 .products(basketDto.getProducts())

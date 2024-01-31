@@ -2,45 +2,62 @@ package com.example.ecommercewebapp.domain.platform.basket.impl.basketproduct;
 
 import com.example.ecommercewebapp.domain.platform.basket.api.basketproduct.BasketProductDto;
 import com.example.ecommercewebapp.domain.platform.basket.api.basketproduct.BasketProductService;
-import lombok.RequiredArgsConstructor;
+import com.example.ecommercewebapp.domain.platform.product.api.ProductService;
+import com.example.ecommercewebapp.library.enums.MessageCodes;
+import com.example.ecommercewebapp.library.exception.CoreException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class BasketProductServiceImpl implements BasketProductService {
 
-    private final BasketProductRepository repository;
+    private BasketProductRepository repository;
+    private ProductService productService;
 
+    public BasketProductServiceImpl(BasketProductRepository repository, ProductService productService) {
+        this.repository = repository;
+        this.productService = productService;
+    }
 
     @Override
-    public BasketProductDto save(BasketProductDto basketProduct) {
-        return null;
+    public BasketProductDto save(BasketProduct basketProduct) {
+        return BasketProductMapper.toDto(repository.save(basketProduct), productService);
     }
 
     @Override
     public BasketProductDto getById(String id) {
-        return null;
+        return BasketProductMapper.toDto(repository.findById(id).orElseThrow(
+                () -> new CoreException(MessageCodes.ENTITY_NOT_FOUND, "Sepette ürün bulunamadı", id)), productService);
     }
 
     @Override
-    public BasketProductDto update(String id, BasketProductDto basketProduct) {
-        return null;
+    public BasketProductDto update(String id, BasketProduct basketProduct) {
+        BasketProduct product = repository.findById(id).orElseThrow(
+                () -> new CoreException(MessageCodes.ENTITY_NOT_FOUND, "Sepette ürün bulunamadı", id));
+        product.setQuantity(basketProduct.getQuantity());
+        product.setBasketProductAmount(basketProduct.getQuantity() * productService.getById(basketProduct.getProductId()).getPrice());
+        return BasketProductMapper.toDto(repository.save(product), productService);
     }
 
     @Override
     public void delete(String id) {
-
+        BasketProduct product = repository.findById(id).orElseThrow(
+                () -> new CoreException(MessageCodes.ENTITY_NOT_FOUND, "Sepette ürün bulunamadı", id));
+        repository.delete(product);
     }
 
     @Override
     public List<BasketProductDto> getAllByBasketId(String id) {
-        return null;
+        List<BasketProductDto> basketProducts = repository.findAllByBasketId(id)
+                .stream().map(basketProduct -> BasketProductMapper.toDto(basketProduct, productService))
+                .collect(Collectors.toList());
+        return basketProducts;
     }
 
     @Override
-    public BasketProductDto findBasketProductByBasketIdAndProductId(String basketProductId, String productId) {
-        return null;
+    public BasketProduct findBasketProductByBasketIdAndProductId(String basketProductId, String productId) {
+        return repository.findAllByBasketIdAndProductId(basketProductId, productId);
     }
 }

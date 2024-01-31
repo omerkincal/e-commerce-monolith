@@ -6,7 +6,7 @@ import com.example.ecommercewebapp.domain.platform.product.api.ProductService;
 
 public class BasketProductMapper {
 
-    public BasketProductDto toDto(BasketProduct basketProduct, ProductService productService){
+    public static BasketProductDto toDto(BasketProduct basketProduct, ProductService productService){
         ProductDto product = productService.getById(basketProduct.getProductId());
 
         return BasketProductDto.builder()
@@ -21,7 +21,7 @@ public class BasketProductMapper {
     }
 
 
-    public BasketProduct toEntity(BasketProduct basketProduct, BasketProductDto dto){
+    public static BasketProduct toEntity(BasketProduct basketProduct, BasketProductDto dto){
         basketProduct.setBasketId(dto.getBasketId());
         basketProduct.setQuantity(dto.getQuantity());
         basketProduct.setProductId(dto.getProduct().getId());

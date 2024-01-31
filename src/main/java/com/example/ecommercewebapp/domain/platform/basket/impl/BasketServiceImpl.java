@@ -1,38 +1,36 @@
 package com.example.ecommercewebapp.domain.platform.basket.impl;
 
+import com.example.ecommercewebapp.domain.auth.user.api.UserDto;
+import com.example.ecommercewebapp.domain.auth.user.api.UserService;
 import com.example.ecommercewebapp.domain.platform.basket.api.BasketDto;
 import com.example.ecommercewebapp.domain.platform.basket.api.BasketService;
+import com.example.ecommercewebapp.domain.platform.basket.api.basketproduct.BasketProductDto;
+import com.example.ecommercewebapp.domain.platform.basket.impl.basketproduct.BasketProduct;
 import com.example.ecommercewebapp.domain.platform.basket.impl.basketproduct.BasketProductServiceImpl;
-import com.example.ecommercewebapp.domain.platform.customer.api.CustomerService;
-import com.example.ecommercewebapp.domain.platform.product.impl.ProductServiceImpl;
+import com.example.ecommercewebapp.domain.platform.product.api.ProductDto;
+import com.example.ecommercewebapp.domain.platform.product.api.ProductService;
+import com.example.ecommercewebapp.domain.platform.product.impl.Product;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
 public class BasketServiceImpl implements BasketService {
 
-    /*private BasketRepository repository;
-
-    private CustomerService customerService;
-
-    private ProductServiceImpl productService;
-
-    private BasketProductServiceImpl basketItemService;
-
-
+    private BasketRepository repository;
+    private UserService userService;
+    private ProductService productService;
+    private BasketProductServiceImpl basketProductService;
     public final int BASKET_STATUS_NONE = 0;
-    public final int BASKET_STATUS_SALED = 1;
+    public final int BASKET_STATUS_SOLD = 1;
 
-    public BasketServiceImpl(BasketRepository repository, CustomerService customerService, ProductServiceImpl productService, BasketProductServiceImpl basketItemService) {
+    public BasketServiceImpl(BasketRepository repository, UserService userService, ProductService productService, BasketProductServiceImpl basketProductService) {
         this.repository = repository;
-        this.customerService = customerService;
+        this.userService = userService;
         this.productService = productService;
-        this.basketItemService = basketItemService;
-    }*/
-
-    @Override
-    public BasketDto addProductToBasket(BasketDto basketDto) {
-        return null;
+        this.basketProductService = basketProductService;
     }
 
     @Override
@@ -45,54 +43,46 @@ public class BasketServiceImpl implements BasketService {
         return null;
     }
 
-/*
 
     @Override
     public BasketDto addProductToBasket(BasketDto basketDto) {
-        if(basketDto.getBasketItemList().get(0).getProduct().getQuantity() < basketDto.getBasketItemList().get(0).getCount()){
-            throw new ErrorResponseException(HttpStatus.BAD_REQUEST);
-        }
-        Basket basket = repository.findBasketByCustomer_CustomerIdAndStatusEquals(basketDto.getCustomer().getCustomerId(), BASKET_STATUS_NONE);
+        /*if(productService.getById(basketDto.getProducts().get(0).getProductId()).getStock() < productService.getById(basketDto.getProducts().get(0).getProductId()).getStock()){
+            throw new CoreException(MessageCodes.BAD_REQUEST, "Urun stokta yok", basketDto.getProducts().get(0).getProductId());
+        }*/
+        Basket basket = repository.findByUserIdAndStatusEquals(basketDto.getUser().getId(), BASKET_STATUS_NONE);
         if (basket != null){
-           return sepetVarUrunEkle(basket, basketDto);
+            return basketIsExist(basket, basketDto);
         }else {
-          return sepetYokYeniSepetOlustur(basketDto);
+          return basketIsAbsent(basketDto);
         }
     }
 
-    private BasketDto sepetYokYeniSepetOlustur(BasketDto basketDto) {
-        Customer customer = customerService.getCustomerEntity(String.valueOf(basketDto.getCustomer().getCustomerId()));
+    private BasketDto basketIsAbsent(BasketDto basketDto) {
+        UserDto user = userService.getById(String.valueOf(basketDto.getUser().getId()));
         Basket basket = new Basket();
-        basket.setCustomer(customer);
+        basket.setUserId(user.getId());
         basket.setStatus(BASKET_STATUS_NONE);
-        List<BasketProduct> basketProductList = new ArrayList<>();
-        for(BasketProductDto dto: basketDto.getBasketItemList()){
-            BasketProduct basketProduct = new BasketProduct();
-            basketProduct.setCount(dto.getCount());
-            Product product = productService.getProductEntity(String.valueOf(dto.getProduct().getProductId()));
-            basketProduct.setProduct(product);
-            basketProduct.setBasketItemAmount(dto.getCount()*product.getPrice());
-            basketProduct.setBasket(basket);
-            basketProductList.add(basketProduct);
+        BasketProduct basketProduct = new BasketProduct();
+        for(BasketProductDto dto: basketDto.getProducts()){
+            basketProduct.setQuantity(dto.getQuantity());
+            ProductDto product = productService.getById(String.valueOf(dto.getProduct().getId()));
+            basketProduct.setProductId(product.getId());
+            basketProduct.setBasketProductAmount(basketProduct.getQuantity() * product.getPrice());
         }
-        basket.setBasketItemList(basketProductList);
-        basket.setTotalAmount(basket.getBasketItemList().get(0).getCount()* basketProductList.get(0).getProduct().getPrice());
-        basket =repository.save(basket);
-        return toDto(basket);
+        basket = repository.save(basket);
+        basketProduct.setBasketId(basket.getId());
+        basketProductService.save(basketProduct);
+        return BasketMapper.toDto(basket, basketProductService, userService);
     }
 
-    private BasketDto sepetVarUrunEkle(Basket basket, BasketDto basketDto) {
-        List<BasketProduct> basketProductList = basket.getBasketItemList();
+    private BasketDto basketIsExist(Basket basket, BasketDto basketDto) {
+        List<BasketProductDto> basketProductList = basketProductService.getAllByBasketId(basket.getId());
         //bu satır bir basketıtemın bir sepette zaten varmı yoksa ilk defa mı eklendiğini kontrol eder
-        BasketProduct basketProduct = basketItemService.findBasketItemByBasketIdAndProductId(basket.getBasketId(), basketDto.getBasketItemList().get(0).getProduct().getProductId());
+        BasketProduct basketProduct = basketProductService.findBasketProductByBasketIdAndProductId(basket.getId(), basketDto.getProducts().get(0).getProduct().getId());
         if (basketProduct != null){
-            Product product = basketProduct.getProduct();
-            basketProduct.setProduct(product);
-            basketProduct.setCount(basketDto.getBasketItemList().get(0).getCount());
-            basketProduct.setBasketItemAmount(basketProduct.getCount()*product.getPrice());
-            basketItemService.save(basketProduct);
+            basketProductService.update(basketProduct.getId(), basketProduct);
         }else {
-            BasketProduct newBasketProduct = new BasketProduct();
+            /*BasketProduct newBasketProduct = new BasketProduct();
             //Product product = productService.getProductEntity(String.valueOf(basketDto.getBasketItemList().get(0).getProduct().getProductId()));
             Product product = productService.getProductEntity(String.valueOf(basketDto.getBasketItemList().get(0).getProduct().getProductId()));
             newBasketProduct.setProduct(product);
@@ -100,26 +90,26 @@ public class BasketServiceImpl implements BasketService {
             newBasketProduct.setBasketItemAmount(newBasketProduct.getCount()*product.getPrice());
             newBasketProduct = basketItemService.save(newBasketProduct);
             newBasketProduct.setBasket(basket);
-            basketProductList.add(newBasketProduct);
+            basketProductList.add(newBasketProduct);*/
         }
-        basket.setBasketItemList(basketProductList);
-        basket.setTotalAmount(calculateBasketAmount(basket.getBasketId()));
+        basket.setTotalAmount(calculateBasketAmount(basket.getId()));
         basket = repository.save(basket);
-        return toDto(basket);
+        return BasketMapper.toDto(basket, basketProductService, userService);
     }
 
-    private double calculateBasketAmount(int basketId) {
-        Basket basket = repository.findBasketByBasketId(basketId);
+   private double calculateBasketAmount(String basketId) {
+        Basket basket = repository.findById(basketId).get();
+        List<BasketProductDto> basketProducts = basketProductService.getAllByBasketId(basketId);
         double totalAmount = 0;
-        for (BasketProduct basketProduct : basket.getBasketItemList()){
-            totalAmount += basketProduct.getBasketItemAmount();
+        for (BasketProductDto basketProduct : basketProducts){
+            totalAmount += basketProduct.getBasketProductAmount();
         }
         return totalAmount;
     }
 
 
 
-    @Override
+ /*   @Override
     public BasketDto getBasketById(String customerId) {
         return toDto(repository.findById(Integer.valueOf(customerId)).get());
     }

@@ -15,10 +15,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("products")
-@RequiredArgsConstructor
 public class ProductController extends BaseController {
 
-    private final ProductService service;
+    private ProductService service;
+
+    public ProductController(ProductService service) {
+        this.service = service;
+    }
 
     @GetMapping
     public Response<PageResponse<ProductResponse>> getAllProducts(Pageable pageable) {
@@ -31,7 +34,7 @@ public class ProductController extends BaseController {
     }
 
     @GetMapping("{id}")
-    public Response<ProductResponse> getShopAdminById(@PathVariable String id){
+    public Response<ProductResponse> getById(@PathVariable String id){
         return respond(ProductMapper.toResponse(service.getById(id)));
     }
 

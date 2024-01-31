@@ -1,5 +1,6 @@
 package com.example.ecommercewebapp.domain.platform.basket.web;
 
+import com.example.ecommercewebapp.domain.auth.user.api.UserDto;
 import com.example.ecommercewebapp.domain.platform.basket.api.basketproduct.BasketProductDto;
 import com.example.ecommercewebapp.domain.platform.customer.api.CustomerDto;
 import lombok.*;
@@ -19,6 +20,6 @@ public class BasketResponse {
     private Date modified;
     private Double totalAmount;
     private Integer status;
-    private CustomerDto customer;
+    private UserDto user;
     private List<BasketProductDto> products;
 }
