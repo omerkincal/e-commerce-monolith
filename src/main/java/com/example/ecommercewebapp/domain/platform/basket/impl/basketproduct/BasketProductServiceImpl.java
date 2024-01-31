@@ -37,7 +37,7 @@ public class BasketProductServiceImpl implements BasketProductService {
         BasketProduct product = repository.findById(id).orElseThrow(
                 () -> new CoreException(MessageCodes.ENTITY_NOT_FOUND, "Sepette ürün bulunamadı", id));
         product.setQuantity(basketProduct.getQuantity());
-        product.setBasketProductAmount(basketProduct.getQuantity() * productService.getById(basketProduct.getProductId()).getPrice());
+        product.setBasketProductAmount(basketProduct.getBasketProductAmount());
         return BasketProductMapper.toDto(repository.save(product), productService);
     }
 

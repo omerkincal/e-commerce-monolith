@@ -76,10 +76,11 @@ public class BasketServiceImpl implements BasketService {
     }
 
     private BasketDto basketIsExist(Basket basket, BasketDto basketDto) {
-        List<BasketProductDto> basketProductList = basketProductService.getAllByBasketId(basket.getId());
-        //bu satır bir basketıtemın bir sepette zaten varmı yoksa ilk defa mı eklendiğini kontrol eder
-        BasketProduct basketProduct = basketProductService.findBasketProductByBasketIdAndProductId(basket.getId(), basketDto.getProducts().get(0).getProduct().getId());
+        BasketProduct basketProduct = basketProductService.findBasketProductByBasketIdAndProductId(basket.getId(),
+                basketDto.getProducts().get(0).getProduct().getId());
         if (basketProduct != null){
+            basketProduct.setQuantity(basketDto.getProducts().get(0).getQuantity());
+            basketProduct.setBasketProductAmount(basketProduct.getQuantity() * productService.getById(basketDto.getProducts().get(0).getProduct().getId()).getPrice());
             basketProductService.update(basketProduct.getId(), basketProduct);
         }else {
             /*BasketProduct newBasketProduct = new BasketProduct();
