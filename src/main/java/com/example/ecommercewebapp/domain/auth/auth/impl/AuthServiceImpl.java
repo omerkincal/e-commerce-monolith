@@ -16,6 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -40,12 +41,18 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public TokenDto login(LoginDto loginDto) {
         CustomUserDetails user = userDetailsService.loadUserByUsername(loginDto.username());
-        String token = jwtService.generateToken(user.getUsername());
-
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return new TokenDto(token);
+
+
+        if (authentication.isAuthenticated()) {
+            String token = jwtService.generateToken(user.getUsername());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            return new TokenDto(token);
+        }
+        throw new UsernameNotFoundException("invalid username {} " + loginDto.username());
+
+
     }
 
     @Override

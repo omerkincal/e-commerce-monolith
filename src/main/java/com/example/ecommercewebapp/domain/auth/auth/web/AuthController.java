@@ -21,7 +21,7 @@ public class AuthController extends BaseController {
 
     @PostMapping("login")
     public Response<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
-        return respond(AuthMapper.toResponse(authService.login(AuthMapper.toDto(loginRequest, UserType.ADMIN))));
+        return respond(AuthMapper.toResponse(authService.login(AuthMapper.toDto(loginRequest))));
     }
 
     @PostMapping("sign-up")

@@ -33,11 +33,13 @@ public class SecurityConfig {
         http
                 .headers(x -> x.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request -> request.requestMatchers("/**").permitAll()
-                       // .requestMatchers("/users/**").hasAnyAuthority("USER", "ADMIN")
-                        //.requestMatchers("/adminuser/**").hasAnyAuthority("USER", "ADMIN")
-                        //.anyRequest().authenticated())
-        )                .formLogin(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(request -> request.requestMatchers("/auth/**").permitAll()
+
+                                .requestMatchers("/users/**").permitAll()
+                                .requestMatchers("/products").hasRole("ADMIN")
+                                .requestMatchers("/categories").hasRole("ADMIN")
+                        .anyRequest().authenticated()
+                ).formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement(x -> x.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

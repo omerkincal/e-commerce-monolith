@@ -11,11 +11,10 @@ public class AuthMapper {
     public AuthMapper() {
     }
 
-    public static LoginDto toDto(LoginRequest loginRequest, UserType userType) {
+    public static LoginDto toDto(LoginRequest loginRequest) {
         return new LoginDto(
                 loginRequest.username(),
-                loginRequest.password(),
-                userType);
+                loginRequest.password());
     }
 
     public static SignUpDto toDto(SignUpRequest signUpRequest, UserType userType) {
