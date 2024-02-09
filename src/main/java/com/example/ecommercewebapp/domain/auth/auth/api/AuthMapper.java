@@ -5,6 +5,7 @@ import com.example.ecommercewebapp.domain.auth.auth.web.LoginResponse;
 import com.example.ecommercewebapp.domain.auth.auth.web.SignUpRequest;
 import com.example.ecommercewebapp.domain.auth.auth.web.SignUpResponse;
 import com.example.ecommercewebapp.domain.auth.user.impl.UserType;
+import jakarta.security.auth.message.AuthStatus;
 
 public class AuthMapper {
 

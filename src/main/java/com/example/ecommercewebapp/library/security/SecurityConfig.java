@@ -10,7 +10,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -18,45 +21,54 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private JwtFilter jwtFilter;
-    private BCryptPasswordEncoder passwordEncoder;
-    private UserDetailsServiceImpl userService;
+    private UserDetailsServiceImpl userDetailsService;
+    private AuthenticationEntryPoint authenticationEntryPoint;
 
-    public SecurityConfig(JwtFilter jwtFilter, BCryptPasswordEncoder passwordEncoder, UserDetailsServiceImpl userService) {
+    public SecurityConfig(JwtFilter jwtFilter, UserDetailsServiceImpl userDetailsService, AuthenticationEntryPoint authenticationEntryPoint) {
         this.jwtFilter = jwtFilter;
-        this.passwordEncoder = passwordEncoder;
-        this.userService = userService;
+        this.userDetailsService = userDetailsService;
+        this.authenticationEntryPoint = authenticationEntryPoint;
     }
 
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .headers(x -> x.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+                .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
+                .headers(x -> x.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(request -> request.requestMatchers("/auth/**").permitAll()
 
-                                .requestMatchers("/users/**").permitAll()
-                                .requestMatchers("/products").hasRole("ADMIN")
-                                .requestMatchers("/categories").hasRole("ADMIN")
+                        .requestMatchers("/users/**").permitAll()
+                        .requestMatchers("/products").hasRole("ADMIN")
+                        .requestMatchers("/categories").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 ).formLogin(AbstractHttpConfigurer::disable)
+                .exceptionHandling(x -> x.authenticationEntryPoint(authenticationEntryPoint))
+
                 .sessionManagement(x -> x.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
 
     @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+
+    @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(userService);
-        authenticationProvider.setPasswordEncoder(passwordEncoder);
+        authenticationProvider.setUserDetailsService(userDetailsService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
         return authenticationProvider;
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
     }
+
 }

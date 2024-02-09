@@ -10,6 +10,7 @@ import com.example.ecommercewebapp.domain.auth.user.impl.User;
 import com.example.ecommercewebapp.domain.auth.user.impl.UserMapper;
 import com.example.ecommercewebapp.library.security.CustomUserDetails;
 import com.example.ecommercewebapp.library.security.JwtService;
+import com.example.ecommercewebapp.library.security.JwtUtils;
 import com.example.ecommercewebapp.library.security.UserDetailsServiceImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,21 +19,20 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthServiceImpl implements AuthService {
 
     private UserService userService;
-    private JwtService jwtService;
-    private BCryptPasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
     private AuthenticationManager authenticationManager;
     private UserDetailsServiceImpl userDetailsService;
 
 
-    public AuthServiceImpl(UserService userService, JwtService jwtService, BCryptPasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, UserDetailsServiceImpl userDetailsService) {
+    public AuthServiceImpl(UserService userService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, UserDetailsServiceImpl userDetailsService) {
         this.userService = userService;
-        this.jwtService = jwtService;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
@@ -40,18 +40,26 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public TokenDto login(LoginDto loginDto) {
-        CustomUserDetails user = userDetailsService.loadUserByUsername(loginDto.username());
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+
+        //CustomUserDetails user = userDetailsService.loadUserByUsername(loginDto.username());
+
+        var authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken
+                (loginDto.username(), loginDto.password()));
 
 
+        String token = JwtUtils.generateToken(((UserDetails)(authentication.getPrincipal())).getUsername());
 
+        return new TokenDto(token);
+
+
+/*
         if (authentication.isAuthenticated()) {
-            String token = jwtService.generateToken(user.getUsername());
+            String token = jwtUtils.generateToken(user.getUsername());
             SecurityContextHolder.getContext().setAuthentication(authentication);
             return new TokenDto(token);
         }
         throw new UsernameNotFoundException("invalid username {} " + loginDto.username());
-
+*/
 
     }
 
@@ -60,7 +68,7 @@ public class AuthServiceImpl implements AuthService {
         UserDto user = userService.createUser(UserMapper.toDto(signUpDto));
         User savedUser = UserMapper.toEntity(new User() , user , passwordEncoder);
         UserDetails userDetails = new CustomUserDetails(savedUser);
-        String token = jwtService.generateToken(userDetails.getUsername());
+        String token = JwtUtils.generateToken(userDetails.getUsername());
         return new TokenDto(token);
     }
 

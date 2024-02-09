@@ -19,13 +19,14 @@ public class User extends AbstractEntity {
     public static final String COL_EMAIL = "email";
 
     private static final String COL_USERNAME = "username";
-    private static final String COL_PASSWORD= "password";
+    private static final String COL_PASSWORD = "password";
     private static final String COL_NAME = "name";
     private static final String COL_SURNAME = "surname";
     private static final String COL_PHONE_NUMBER = "phone_number";
     private static final String COL_EXTENSION_NUMBER = "extension_number";
     private static final String COL_USER_TYPE = "user_type";
     private static final String COL_VERIFIED = "verified";
+    private static final String COL_AUTHORITIES = "authorities";
 
     @Column(name = COL_USERNAME)
     private String username;
@@ -54,8 +55,4 @@ public class User extends AbstractEntity {
     @Column(name = COL_USER_TYPE)
     @Enumerated(EnumType.STRING)
     private UserType userType;
-
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Set<GrantedAuthority> authorities;
-
 }

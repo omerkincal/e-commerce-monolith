@@ -3,6 +3,7 @@ package com.example.ecommercewebapp.domain.auth.user.impl;
 import com.example.ecommercewebapp.domain.auth.auth.api.SignUpDto;
 import com.example.ecommercewebapp.domain.auth.user.api.UserDto;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class UserMapper {
 
@@ -25,7 +26,7 @@ public class UserMapper {
                 .build();
     }
 
-    public static User toEntity(User user, UserDto dto, BCryptPasswordEncoder passwordEncoder){
+    public static User toEntity(User user, UserDto dto, PasswordEncoder passwordEncoder){
         user.setUsername(dto.getUsername());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setEmail(dto.getEmail());
