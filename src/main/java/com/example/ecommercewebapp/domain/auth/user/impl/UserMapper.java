@@ -1,54 +1,77 @@
 package com.example.ecommercewebapp.domain.auth.user.impl;
 
+
 import com.example.ecommercewebapp.domain.auth.auth.api.SignUpDto;
 import com.example.ecommercewebapp.domain.auth.user.api.UserDto;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import com.example.ecommercewebapp.domain.auth.userusergroup.api.UserUserGroupDto;
+
+import java.util.List;
 
 public class UserMapper {
 
-    public UserMapper(){}
+    private UserMapper() {
+    }
 
-    public static UserDto toDto(User user){
+    public static UserDto toDto(User user) {
         return UserDto.builder()
                 .id(user.getId())
                 .created(user.getCreated())
                 .modified(user.getModified())
-                .verified(user.getVerified())
-                .username(user.getUsername())
-                .email(user.getEmail())
                 .name(user.getName())
                 .surname(user.getSurname())
+                .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
                 .extensionNumber(user.getExtensionNumber())
-                .password(user.getPassword())
+                .status(user.getStatus())
                 .userType(user.getUserType())
+                .verified(user.getVerified())
                 .build();
     }
 
-    public static User toEntity(User user, UserDto dto, PasswordEncoder passwordEncoder){
-        user.setUsername(dto.getUsername());
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        user.setEmail(dto.getEmail());
-        user.setName(dto.getName());
-        user.setSurname(dto.getSurname());
-        user.setPhoneNumber(dto.getPhoneNumber());
-        user.setExtensionNumber(dto.getExtensionNumber());
-        user.setUserType(dto.getUserType());
+    public static UserDto toDto(User user, List<UserUserGroupDto> userUserGroupDtos) {
+        return UserDto.builder()
+                .id(user.getId())
+                .created(user.getCreated())
+                .modified(user.getModified())
+                .name(user.getName())
+                .surname(user.getSurname())
+                .email(user.getEmail())
+                .phoneNumber(user.getPhoneNumber())
+                .extensionNumber(user.getExtensionNumber())
+                .status(user.getStatus())
+                .userType(user.getUserType())
+                .verified(user.getVerified())
+                .userGroups(userUserGroupDtos != null ? userUserGroupDtos.stream()
+                        .filter(userUserGroupDto -> userUserGroupDto.getUserId() != null && userUserGroupDto.getUserId().equals(user.getId()))
+                        .map(UserUserGroupDto::getUserGroup)
+                        .toList() : null)
+                .build();
+    }
+
+    public static User toEntity(SignUpDto signUpDto) {
+        User user = new User();
+        user.setPassword(signUpDto.password());
+        user.setEmail(signUpDto.email());
+        user.setName(signUpDto.name());
+        user.setSurname(signUpDto.surname());
+        user.setPhoneNumber(signUpDto.phoneNumber());
+        user.setStatus(true);
+        user.setUserType(signUpDto.userType());
+        user.setVerified(false);
+        user.setExtensionNumber(signUpDto.extensionNumber());
         return user;
     }
 
-        public static UserDto toDto(SignUpDto signUpDto) {
-            UserDto user = new UserDto();
-            user.setUsername(signUpDto.username());
-            user.setPassword(signUpDto.password());
-            user.setEmail(signUpDto.email());
-            user.setName(signUpDto.name());
-            user.setSurname(signUpDto.surname());
-            user.setPhoneNumber(signUpDto.phoneNumber());
-            user.setUserType(signUpDto.userType());
-            user.setVerified(false);
-            user.setExtensionNumber(signUpDto.extensionNumber());
-            return user;
-        }
+    public static User toEntity(User user, UserDto dto) {
+        user.setName(dto.getName());
+        user.setSurname(dto.getSurname());
+        user.setEmail(dto.getEmail());
+        user.setPhoneNumber(dto.getPhoneNumber());
+        user.setExtensionNumber(dto.getExtensionNumber());
+        user.setPassword(dto.getPassword());
+        user.setStatus(dto.getStatus());
+        user.setUserType(dto.getUserType());
+        user.setVerified(dto.getVerified() != null && dto.getVerified());
+        return user;
+    }
 }

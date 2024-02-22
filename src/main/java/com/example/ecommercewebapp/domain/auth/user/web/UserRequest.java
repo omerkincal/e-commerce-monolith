@@ -1,22 +1,22 @@
 package com.example.ecommercewebapp.domain.auth.user.web;
 
-import com.example.ecommercewebapp.domain.auth.user.impl.UserType;
+import com.example.ecommercewebapp.domain.auth.user.api.UserType;
 import lombok.*;
 
-@Getter
+import java.util.List;
+
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@RequiredArgsConstructor
 @Builder
 @ToString
 public class UserRequest {
-    private String username;
-    private String password;
-    private String name;
-    private String surname;
-    private String email;
-    private String phoneNumber;
-    private String extensionNumber;
-    private Boolean verified;
-    private UserType userType;
+    private final String name;
+    private final String surname;
+    private final String email;
+    private final String phoneNumber;
+    private final String extensionNumber;
+    private final Boolean status;
+    private final UserType userType;
+    private final List<String> userGroupIds;
 }

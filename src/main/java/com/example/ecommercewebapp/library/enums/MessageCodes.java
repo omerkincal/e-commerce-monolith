@@ -9,7 +9,8 @@ public enum MessageCodes {
     ENTITY_NOT_FOUND("404","general.entityNotFound"),
     ENTITY_ALREADY_EXISTS("409","general.entityAlreadyExists"),
     FIELD_NOT_FOUND("1001","general.fieldNotFound"),
-    BAD_ALGORITHM("1002","general.badAlgorithm");
+    BAD_ALGORITHM("1002","general.badAlgorithm"),
+    NEW_PASSWORD_CANNOT_SAME_LAST_THREE_PASSWORD("1003","general.newPasswordCannotSameLastThreePasswords" );
     private final String code;
     private final String message;
 

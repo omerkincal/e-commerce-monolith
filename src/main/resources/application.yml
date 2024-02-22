@@ -1,16 +1,29 @@
 server:
   port: 9090
 spring:
+  messages:
+    basename: lang/messages
   main:
-    allow-circular-references: true
+    allow-circular-references: false
   application:
     name: school-web
   datasource:
     url: jdbc:mysql://localhost:3306/e-commerce?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: root
-    password: password
+    password: omeR%50hajk
     driverClassName: com.mysql.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: update
 
+management:
+  super_admin:
+    email: super_admin@kurtlarkonseyi.com
+    password: 12345
+  admin:
+    email: admin@kurtlarkonseyi.com
+    password: 12345
+
+
+jwt:
+  key: 2c7143b88d4497924c37a4d2a1f97d97973191d6861216e82f135a2d8cef8233235aacec4ef6e181ebc32c122b6599bab3798e52332efbe42662e20e44bc8c15

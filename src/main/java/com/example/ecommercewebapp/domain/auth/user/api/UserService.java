@@ -1,17 +1,33 @@
 package com.example.ecommercewebapp.domain.auth.user.api;
 
-import com.example.ecommercewebapp.domain.auth.user.impl.User;
-import com.example.ecommercewebapp.domain.auth.user.impl.UserType;
+import com.example.ecommercewebapp.library.datasourceloadoptions.DataSourceLoadOptions;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface UserService {
-    UserDto createUser(UserDto userDto);
-    UserDto getById(String id);
-    UserDto update(UserDto userDto, String id);
     Page<UserDto> getAll(Pageable pageable);
-    //Page<UserDto> filter(DataSourceLoadOptions dataSourceLoadOptions, Pageable pageable);
+
+    UserDto getById(String id);
+
+    @Transactional
+    UserDto save(UserDto dto);
+
+    Long countByUserType(UserType userType);
+
+    @Transactional
+    UserDto update(String id, UserDto dto);
+
+    @Transactional
     void delete(String id);
-    User findByUsernameAndPasswordAndUserType(String username, String password, UserType userType);
+
+    Page<UserDto> filter(DataSourceLoadOptions dataSourceLoadOptions, Pageable pageable);
+
+    void checkUserExists(String userId);
+
+    UserDto getMe();
+
+    UserDto updateMe(UserDto dto);
+
+    Page<UserDto> panelFilter(DataSourceLoadOptions dataSourceLoadOptions, Pageable pageable);
 }
