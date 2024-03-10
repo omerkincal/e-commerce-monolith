@@ -3,10 +3,6 @@ package com.example.ecommercewebapp.domain.auth.user.impl;
 import com.example.ecommercewebapp.domain.auth.user.api.UserDto;
 import com.example.ecommercewebapp.domain.auth.user.api.UserService;
 import com.example.ecommercewebapp.domain.auth.user.api.UserType;
-import com.example.ecommercewebapp.domain.auth.usergroup.api.UserGroupService;
-import com.example.ecommercewebapp.domain.auth.usergroup.impl.UserGroupType;
-import com.example.ecommercewebapp.domain.auth.userusergroup.api.UserUserGroupDto;
-import com.example.ecommercewebapp.domain.auth.userusergroup.impl.UserUserGroupServiceImpl;
 import com.example.ecommercewebapp.library.datasourceloadoptions.DataSourceLoadOptions;
 import com.example.ecommercewebapp.library.datasourceloadoptions.DataSourceLoadOptionsUtil;
 import com.example.ecommercewebapp.library.enums.MessageCodes;
@@ -14,7 +10,6 @@ import com.example.ecommercewebapp.library.exception.CoreException;
 import com.example.ecommercewebapp.library.security.JwtUtils;
 import com.example.ecommercewebapp.library.utils.Functions;
 import com.example.ecommercewebapp.library.utils.PageUtil;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -27,7 +22,6 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.ecommercewebapp.domain.auth.usergroup.impl.DefaultUserGroupCreator.CUSTOMER_GROUP_NAME;
 
 
 @Service
@@ -35,18 +29,12 @@ import static com.example.ecommercewebapp.domain.auth.usergroup.impl.DefaultUser
 public class UserServiceImpl implements UserService {
     private final UserRepository repository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final UserGroupService userGroupService;
-    private final UserUserGroupServiceImpl userUserGroupService;
 
     public UserServiceImpl(UserRepository repository,
-                           BCryptPasswordEncoder passwordEncoder,
-                           UserGroupService userGroupService,
-                           @Lazy UserUserGroupServiceImpl userUserGroupService
+                           BCryptPasswordEncoder passwordEncoder
     ) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
-        this.userGroupService = userGroupService;
-        this.userUserGroupService = userUserGroupService;
     }
 
     @Override
@@ -69,9 +57,7 @@ public class UserServiceImpl implements UserService {
                 ? dto.getPassword()
                 : Functions.generateRandomPassword()));
         User save = repository.save(user);
-        var userUserGroups = userUserGroupService.saveAll(save.getId(), dto.getUserGroups());
-        //TODO password mail atılacak
-        return UserMapper.toDto(save, userUserGroups);
+        return UserMapper.toDto(save);
     }
 
     @Override
@@ -84,10 +70,6 @@ public class UserServiceImpl implements UserService {
         checkUserExists(user.getEmail());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User save = repository.save(user);
-        userUserGroupService.save(UserUserGroupDto.builder()
-                .userId(save.getId())
-                .userGroup(userGroupService.findByNameAndUserGroupTypeDto(CUSTOMER_GROUP_NAME, UserGroupType.CUSTOMER))
-                .build());
         return save;
     }
 
@@ -109,8 +91,7 @@ public class UserServiceImpl implements UserService {
     public UserDto update(String id, UserDto dto) {
         var user = repository.findById(id).orElseThrow(() -> new CoreException(MessageCodes.ENTITY_NOT_FOUND, User.class.getSimpleName(), id));
         User save = repository.save(setUser(user, dto));
-        var userUserGroups = userUserGroupService.saveAll(save.getId(), dto.getUserGroups());
-        return UserMapper.toDto(save, userUserGroups);
+        return UserMapper.toDto(save);
     }
 
 
@@ -133,8 +114,7 @@ public class UserServiceImpl implements UserService {
         spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("userType"), UserType.ADMIN));
         var users = repository.findAll(spec, pageable);
         List<String> userIds = users.map(User::getId).toList();
-        List<UserUserGroupDto> userUserGroups = userUserGroupService.getAllByUserIds(userIds);
-        return PageUtil.pageToDto(users, user -> UserMapper.toDto(user, userUserGroups));
+        return PageUtil.pageToDto(users, user -> UserMapper.toDto(user));
     }
 
     /*@Override

@@ -2,7 +2,6 @@ package com.example.ecommercewebapp.domain.auth.user.api;
 
 import com.example.ecommercewebapp.domain.auth.user.web.UserRequest;
 import com.example.ecommercewebapp.domain.auth.user.web.UserResponse;
-import com.example.ecommercewebapp.domain.auth.usergroup.api.UserGroupDto;
 import com.example.ecommercewebapp.library.utils.PageUtil;
 import org.springframework.data.domain.Page;
 
@@ -22,7 +21,6 @@ public class UserMapper {
                 .extensionNumber(request.getExtensionNumber())
                 .status(request.getStatus())
                 .userType(request.getUserType())
-                .userGroups(request.getUserGroupIds() != null ? request.getUserGroupIds().stream().map( id -> UserGroupDto.builder().id(id).build()).toList() : null)
                 .build();
     }
 
@@ -38,7 +36,6 @@ public class UserMapper {
                 .extensionNumber(dto.getExtensionNumber())
                 .status(dto.getStatus())
                 .userType(dto.getUserType())
-                .userGroups(dto.getUserGroups())
                 .verified(dto.getVerified())
                 .build();
     }

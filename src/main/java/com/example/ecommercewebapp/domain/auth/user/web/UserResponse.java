@@ -1,7 +1,6 @@
 package com.example.ecommercewebapp.domain.auth.user.web;
 
 import com.example.ecommercewebapp.domain.auth.user.api.UserType;
-import com.example.ecommercewebapp.domain.auth.usergroup.api.UserGroupDto;
 import lombok.*;
 
 import java.util.Date;
@@ -25,6 +24,4 @@ public class UserResponse {
     private final Boolean status;
     private final Boolean verified;
     private final UserType userType;
-    private final List<UserGroupDto> userGroups;
-
 }
